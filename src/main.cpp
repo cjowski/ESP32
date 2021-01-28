@@ -8,7 +8,7 @@
 #define SERIAL2_RX_PIN 16
 #define SERIAL2_TX_PIN 17
 #define SERIAL_BAUD_RATE 9600
-#define SERIAL_SIZE_RX 1024
+#define SERIAL_SIZE_RX 512
 
 #define ESP_SERVER_PORT 80
 
@@ -16,8 +16,8 @@
 #define FM_CHANNEL_VALUES_JSON_BUFFER_SIZE 10000
 
 const char* TEXT_CONTENT_TYPE = "application/json";
-const char* SSID = "";
-const char* PASSWORD = "";
+const char* SSID = "UPCCD6A9E8";
+const char* PASSWORD = "tkr8QejnrMtr";
 
 int currentTime = 0;
 int lastTime = 0;
@@ -63,7 +63,8 @@ void updateEspServerTextToSend()
 }
 
 void loop() {
-  delay(10);
+  //delay(10);
   serialReader->Read();
   updateEspServerTextToSend();
+  //Serial.println(serialReader->GetRecentReadValue()->GetText());
 }

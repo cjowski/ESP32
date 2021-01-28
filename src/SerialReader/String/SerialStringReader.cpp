@@ -2,28 +2,60 @@
 
 void SerialStringReader::Read()
 {
-  bool recvInProgress = false;
-  bool newValueReady = false;
-  char startMarker = '<';
-  char endMarker = '>';
-  char rc;
-  String receivedTextInProgress = "";
+  int currentReadIndex = 0;
+  bool receivingInProgress = false;
+  char readCharacter;
+  char nextWordSeparator = FIRST_WORD_SEPARATOR;
+  
+  while (ReadSerial->available() > 0) {
 
-  while (ReadSerial->available() > 0 && newValueReady == false) {
-    rc = ReadSerial->read();
+    if (currentReadIndex >= INPUT_STRING_SIZE)
+    {
+      currentReadIndex = 0;
+      break;
+    }
 
-    if (recvInProgress == true) {
-      if (rc != endMarker) {
-        receivedTextInProgress += rc;
+    readCharacter = ReadSerial->read();
+
+    if (IsWordSeparator(readCharacter)) {
+      if (readCharacter != nextWordSeparator) {
+        break;
+      }
+      nextWordSeparator++;
+    }
+
+    if (receivingInProgress) {
+      if (readCharacter != END_MARKER) {
+        SetReceivedChar(readCharacter, currentReadIndex);
+        currentReadIndex++;
       }
       else {
-        recvInProgress = false;
-        newValueReady = true;
-        RecentReadValue->SetNewTextValue(receivedTextInProgress);
+        SetReceivedChar('\0', currentReadIndex);
+        receivingInProgress = false;
+        currentReadIndex = 0;
+        // Serial.println(ReceivedChars);
+        RecentReadValue->SetNewTextValue(ReceivedChars);
+        break;
       }
     }
-    else if (rc == startMarker) {
-        recvInProgress = true;
+    else if (readCharacter == START_MARKER) {
+      receivingInProgress = true;
+      currentReadIndex = 0;
     }
+  }
+}
+
+bool SerialStringReader::IsWordSeparator(char character)
+{
+  return character >= FIRST_WORD_SEPARATOR;
+}
+
+void SerialStringReader::SetReceivedChar(char character, int index)
+{
+  if (IsWordSeparator(character)) {
+    ReceivedChars[index] = ' ';
+  }
+  else {
+    ReceivedChars[index] = character;
   }
 }

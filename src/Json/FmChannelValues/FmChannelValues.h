@@ -5,6 +5,8 @@
 
   #define CHANNELS_COUNT 4
   #define JSON_BUFFER_SIZE 100
+  
+  const char WORD_SEPARATOR = ' ';
 
   class FmChannelValues
   {

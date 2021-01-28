@@ -3,15 +3,14 @@
 FmChannelValues::FmChannelValues(String serialReadText)
 {
   //STRING SHOULD BE VALIDATED BEFORE!!!
-  int currentIndex = serialReadText.indexOf(' ');
+  int currentIndex = serialReadText.indexOf(WORD_SEPARATOR);
   Time = serialReadText.substring(0, currentIndex).toInt();
-  int previousIndex = currentIndex;
-
+  int previousIndex = currentIndex + 1;
   for (int i = 0; i < CHANNELS_COUNT; i++)
   {
-    currentIndex = serialReadText.indexOf(' ', currentIndex + 1);
+    currentIndex = serialReadText.indexOf(WORD_SEPARATOR, previousIndex + 1);
     ChannelValues[i] = serialReadText.substring(previousIndex, currentIndex).toInt();
-    previousIndex = currentIndex;
+    previousIndex = currentIndex + 1;
   }
 }
 
@@ -31,7 +30,7 @@ bool FmChannelValues::SerialReadTextValid(String serialReadText)
 
   for (int i = 0; i < CHANNELS_COUNT + 1; i++)
   {
-    index = serialReadText.indexOf(' ', i);
+    index = serialReadText.indexOf(WORD_SEPARATOR, i);
 
     if (index == -1)
     {

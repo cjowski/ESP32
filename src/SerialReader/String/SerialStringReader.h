@@ -4,7 +4,7 @@
   #include "SerialReader/SerialReader.h"
   #include <WString.h>
 
-  #define INPUT_STRING_SIZE 32
+  #define INPUT_STRING_SIZE 50
 
   class SerialStringReader : public SerialReader
   {

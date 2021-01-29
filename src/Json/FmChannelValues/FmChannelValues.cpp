@@ -6,6 +6,11 @@ FmChannelValues::FmChannelValues(String serialReadText)
   int currentIndex = serialReadText.indexOf(WORD_SEPARATOR);
   Time = serialReadText.substring(0, currentIndex).toInt();
   int previousIndex = currentIndex + 1;
+
+  currentIndex = serialReadText.indexOf(WORD_SEPARATOR, previousIndex + 1);
+  FmSignalActive = serialReadText.substring(previousIndex, currentIndex).toInt() == 1;
+  previousIndex = currentIndex + 1;
+
   for (int i = 0; i < CHANNELS_COUNT; i++)
   {
     currentIndex = serialReadText.indexOf(WORD_SEPARATOR, previousIndex + 1);
@@ -28,7 +33,7 @@ bool FmChannelValues::SerialReadTextValid(String serialReadText)
   int index = -1;
   String currentText = "";
 
-  for (int i = 0; i < CHANNELS_COUNT + 1; i++)
+  for (int i = 0; i < CHANNELS_COUNT + 2; i++)
   {
     index = serialReadText.indexOf(WORD_SEPARATOR, i);
 
@@ -60,6 +65,7 @@ DynamicJsonDocument FmChannelValues::GetJson()
   DynamicJsonDocument outputJson(JSON_BUFFER_SIZE);
 
   outputJson["Time"] = Time;
+  outputJson["FmSignalActive"] = FmSignalActive;
   for (int i = 0; i < CHANNELS_COUNT; i++)
   {
     outputJson["ChannelValues"][i] = ChannelValues[i];

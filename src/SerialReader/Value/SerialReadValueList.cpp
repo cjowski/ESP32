@@ -18,14 +18,14 @@ void SerialReadValueList::Add(SerialReadValue newValue)
   }
 }
 
-std::list<String> SerialReadValueList::GetStringList()
+std::list<String> SerialReadValueList::ToStringList()
 {
   std::list<String> outputList;
 
   std::list<SerialReadValue>::iterator it;
   for (it = Values.begin(); it != Values.end(); it++)
   {
-    outputList.push_back(it->GetText());
+    outputList.push_back(it->ToString());
   }
 
   return outputList;
@@ -38,7 +38,7 @@ String SerialReadValueList::ToString()
   std::list<SerialReadValue>::iterator it;
   for (it = Values.begin(); it != Values.end(); it++)
   {
-    outputString += it->GetText() + "\n";
+    outputString += it->ToString() + "\n";
   }
 
   return outputString;

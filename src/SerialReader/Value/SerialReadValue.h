@@ -6,14 +6,16 @@
   class SerialReadValue
   {
     private:
+    char SerialPrintKey;
     String TextValue;
 
     public:
     SerialReadValue();
     bool Equals(SerialReadValue valueToCompare);
-    void SetNewTextValue(String textValue);
+    void SetNewTextValue(char serialPrintKey, String textValue);
     SerialReadValue GetCopy();
-    String GetText();
+    char GetSerialPrintKey();
+    String ToString();
   };
 
 #endif

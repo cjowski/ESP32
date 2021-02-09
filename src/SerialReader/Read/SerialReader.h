@@ -2,7 +2,7 @@
 #define SERIAL_READER_H
 
   #include <HardwareSerial.h>
-  #include "SerialReadValue.h"
+  #include "SerialReader/Value/SerialReadValue.h"
 
   class SerialReader
   {

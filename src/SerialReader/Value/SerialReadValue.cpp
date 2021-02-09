@@ -8,21 +8,27 @@ SerialReadValue::SerialReadValue()
 SerialReadValue SerialReadValue::GetCopy()
 {
   SerialReadValue copy;
-  copy.SetNewTextValue(TextValue);
+  copy.SetNewTextValue(SerialPrintKey, TextValue);
   return copy;
 }
 
 bool SerialReadValue::Equals(SerialReadValue valueToCompare)
 {
-  return TextValue.equals(valueToCompare.GetText());
+  return TextValue.equals(valueToCompare.ToString());
 }
 
-void SerialReadValue::SetNewTextValue(String newTextValue)
+void SerialReadValue::SetNewTextValue(char serialPrintKey, String newTextValue)
 {
+  SerialPrintKey = serialPrintKey;
   TextValue = newTextValue;
 }
 
-String SerialReadValue::GetText()
+char SerialReadValue::GetSerialPrintKey()
+{
+  return SerialPrintKey;
+}
+
+String SerialReadValue::ToString()
 {
   if (!TextValue.isEmpty())
   {

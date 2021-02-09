@@ -10,17 +10,15 @@
   class EspServer
   {
     private:
+    const char* JSON_CONTENT_TYPE = "application/json";
     AsyncWebServer *Server;
     HardwareSerial *PrintSerial;
-    String TextToSend;
-    String TextContentType;
-
-    void OnClientGet(AsyncWebServerRequest *request);
 
     public:
-    EspServer(int serverPort, HardwareSerial *printSerial, String textContentType);
+    String FmChannelValuesJson;
+    String GyroValuesJson;
+    EspServer(int serverPort, HardwareSerial *printSerial);
     void Connect(char* ssid,  char* password);
-    void SetTextToSend(String textToSend);
   };
 
 #endif

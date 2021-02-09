@@ -1,11 +1,11 @@
 #include "EspServer.h"
 
-EspServer::EspServer(int serverPort, HardwareSerial *printSerial, String textContentType)
+EspServer::EspServer(int serverPort, HardwareSerial *printSerial)
 {
   PrintSerial = printSerial;
   Server = new AsyncWebServer(serverPort);
-  TextContentType = textContentType;
-  TextToSend = "";
+  FmChannelValuesJson = "";
+  GyroValuesJson = "";
 }
 
 void EspServer::Connect(char* ssid, char* password)
@@ -28,20 +28,13 @@ void EspServer::Connect(char* ssid, char* password)
   PrintSerial->println("IP address: ");
   PrintSerial->println(WiFi.localIP());
 
-  Server->on("/", HTTP_GET, [=](AsyncWebServerRequest *request) {
-    OnClientGet(request);
+  Server->on("/fm", HTTP_GET, [=](AsyncWebServerRequest *request) {
+    request->send(200, JSON_CONTENT_TYPE, FmChannelValuesJson);
+  });
+
+  Server->on("/gyro", HTTP_GET, [=](AsyncWebServerRequest *request) {
+    request->send(200, JSON_CONTENT_TYPE, GyroValuesJson);
   });
 
   Server->begin();
-}
-
-void EspServer::OnClientGet(AsyncWebServerRequest *request) {
-  request->send(200, TextContentType, TextToSend);
-}
-
-void EspServer::SetTextToSend(String textToSend) {
-  if (!textToSend.isEmpty())
-  {
-    TextToSend = textToSend;
-  }
 }

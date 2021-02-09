@@ -4,6 +4,7 @@ void SerialStringReader::Read()
 {
   int currentReadIndex = 0;
   bool receivingInProgress = false;
+  bool receivingKeyInProgress = false;
   char readCharacter;
   char nextWordSeparator = FIRST_WORD_SEPARATOR;
   
@@ -25,7 +26,16 @@ void SerialStringReader::Read()
     }
 
     if (receivingInProgress) {
-      if (readCharacter != END_MARKER) {
+      if (readCharacter == KEY_START_MARKER) {
+        receivingKeyInProgress = true;
+      }
+      else if (receivingKeyInProgress && readCharacter != KEY_END_MARKER) {
+        ReceivedKey = readCharacter;
+      }
+      else if (readCharacter == KEY_END_MARKER) {
+        receivingKeyInProgress = false;
+      }
+      else if (readCharacter != END_MARKER) {
         SetReceivedChar(readCharacter, currentReadIndex);
         currentReadIndex++;
       }
@@ -34,7 +44,7 @@ void SerialStringReader::Read()
         receivingInProgress = false;
         currentReadIndex = 0;
         // Serial.println(ReceivedChars);
-        RecentReadValue->SetNewTextValue(ReceivedChars);
+        RecentReadValue->SetNewTextValue(ReceivedKey, ReceivedChars);
         break;
       }
     }

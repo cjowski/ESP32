@@ -16,6 +16,7 @@
     const char KEY_START_MARKER = '[';
     const char KEY_END_MARKER = ']';
     const char FIRST_WORD_SEPARATOR = 'a';
+    const char LAST_WORD_SEPARATOR = 'z';
 
     bool IsWordSeparator(char character);
     void SetReceivedChar(char character, int index);

@@ -26,7 +26,7 @@ GyroValues::GyroValues(String serialReadText)
 bool GyroValues::IsNumber(String text) {
   for(char i = 0; i < text.length(); i++) {
     char currentChar = text.charAt(i);
-    if (!isDigit(currentChar) && currentChar != '.') {
+    if (!isDigit(currentChar) && currentChar != '.' && currentChar != '-') {
       return false;
     }
   }

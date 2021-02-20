@@ -12,7 +12,7 @@
     static const int JSON_BUFFER_SIZE = 120;
 
     long Time;
-    bool FmSignalActive;
+    int FmSignalState;
     int ChannelValues[CHANNELS_COUNT];
     static bool IsInteger(String text);
 

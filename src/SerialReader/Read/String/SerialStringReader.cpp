@@ -43,7 +43,7 @@ void SerialStringReader::Read()
         SetReceivedChar('\0', currentReadIndex);
         receivingInProgress = false;
         currentReadIndex = 0;
-        // Serial.println(ReceivedChars);
+        //Serial.println(ReceivedChars);
         RecentReadValue->SetNewTextValue(ReceivedKey, ReceivedChars);
         break;
       }
@@ -57,7 +57,7 @@ void SerialStringReader::Read()
 
 bool SerialStringReader::IsWordSeparator(char character)
 {
-  return character >= FIRST_WORD_SEPARATOR;
+  return character >= FIRST_WORD_SEPARATOR && character <= LAST_WORD_SEPARATOR;
 }
 
 void SerialStringReader::SetReceivedChar(char character, int index)

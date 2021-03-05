@@ -11,6 +11,8 @@
   {
     private:
     const char* JSON_CONTENT_TYPE = "application/json";
+    const char* CONNECTED_JSON = "{ \"connected\": true }";
+    const char* NULL_JSON = "null";
     AsyncWebServer *Server;
     HardwareSerial *PrintSerial;
 
@@ -18,7 +20,9 @@
     String FmChannelValuesJson;
     String GyroValuesJson;
     EspServer(int serverPort, HardwareSerial *printSerial);
-    void Connect(char* ssid,  char* password);
+    void Setup();
+    void SetAccessPoint(const char* ssid, const char* password);
+    void ConnectToWifi(const char* ssid, const char* password);
   };
 
 #endif

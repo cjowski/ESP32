@@ -3,6 +3,8 @@
 
   #include <WiFi.h>
   #include <AsyncTCP.h>
+  #include <ArduinoJson.h>
+  #include <AsyncJson.h>
   #include <ESPAsyncWebServer.h>
   #include <HardwareSerial.h>
   #include <WString.h>
@@ -21,8 +23,8 @@
     String GyroValuesJson;
     EspServer(int serverPort, HardwareSerial *printSerial);
     void Setup();
-    void SetAccessPoint(const char* ssid, const char* password);
-    void ConnectToWifi(const char* ssid, const char* password);
+    void SetAccessPoint(char* ssid, char* password);
+    void ConnectToWifi(char* ssid, char* password);
   };
 
 #endif

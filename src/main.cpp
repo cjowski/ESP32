@@ -11,8 +11,8 @@ EspController *espController = new EspController();
 
 void setup() {
   espController->Setup(
-    SSID,
-    PASSWORD,
+    (char*)SSID,
+    (char*)PASSWORD,
     EspController::Mode::accessPoint
   );
   delay(250);

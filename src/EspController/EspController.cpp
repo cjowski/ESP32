@@ -6,7 +6,7 @@ EspController::EspController()
   GyroValuesList = new SerialReadValueList(SERIAL_READ_VALUE_LIST);
 }
 
-void EspController::Setup(const char *ssid, const char *password, Mode espMode)
+void EspController::Setup(char *ssid, char *password, Mode espMode)
 {
   Serial.begin(SERIAL_BAUD_RATE);
   Serial2.begin(SERIAL_BAUD_RATE, SERIAL_8N1, SERIAL2_RX_PIN, SERIAL2_TX_PIN);

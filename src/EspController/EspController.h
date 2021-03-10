@@ -33,7 +33,7 @@
     public:
     enum Mode { accessPoint, wifi };
     EspController();
-    void Setup(const char *ssid, const char *password, Mode espMode);
+    void Setup(char *ssid, char *password, Mode espMode);
     void Loop();
   };
   

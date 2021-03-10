@@ -12,16 +12,31 @@ void EspServer::Setup()
 {
   DefaultHeaders::Instance().addHeader("Access-Control-Allow-Origin", "*");
   DefaultHeaders::Instance().addHeader("Access-Control-Allow-Methods", "GET, POST, PATCH, PUT, DELETE, OPTIONS");
-  DefaultHeaders::Instance().addHeader("Access-Control-Allow-Headers", "Origin, Content-Type, X-Auth-Token");
+  DefaultHeaders::Instance().addHeader("Access-Control-Allow-Headers", "Accept, Origin, Content-Type, Access-Control-Allow-Headers, X-Auth-Token, Authorization, X-Requested-With");
 
-  Server->on("/wifiConnect", HTTP_POST, [=](AsyncWebServerRequest *request) {
-    if (request->hasParam("ssid") && request->hasParam("password")) {
+  Server->on(
+    "/wifiConnect",
+    HTTP_POST,
+    [=](AsyncWebServerRequest * request) {
+      request->send(200, JSON_CONTENT_TYPE, CONNECTED_JSON);
+    },
+    NULL,
+    [=](AsyncWebServerRequest * request, uint8_t *data, size_t len, size_t index, size_t total) {
+      std::string *serializedJson = new std::string((char *)data); /* construct on the heap */
+      PrintSerial->println(serializedJson->c_str());
+      DynamicJsonDocument wifiCredentials(120);
+      deserializeJson(wifiCredentials, serializedJson->c_str());
+      const char* ssid = wifiCredentials["ssid"];
+      const char* password = wifiCredentials["password"];
+      PrintSerial->println("SSID: " + String(ssid));
+      PrintSerial->println("Password: " + String(password));
       ConnectToWifi(
-        request->getParam("ssid")->value().c_str(),
-        request->getParam("password")->value().c_str()
+        (char*)ssid,
+        (char*)password
       );
+      delete serializedJson;
     }
-  });
+  );
 
   Server->on("/status", HTTP_GET, [=](AsyncWebServerRequest *request) {
     request->send(200, JSON_CONTENT_TYPE, CONNECTED_JSON);
@@ -38,7 +53,7 @@ void EspServer::Setup()
   Server->begin();
 }
 
-void EspServer::SetAccessPoint(const char* ssid, const char* password)
+void EspServer::SetAccessPoint(char* ssid, char* password)
 {
   WiFi.mode(WIFI_AP);
   WiFi.softAP(ssid, password);
@@ -48,7 +63,7 @@ void EspServer::SetAccessPoint(const char* ssid, const char* password)
   PrintSerial->println(myIP);
 }
 
-void EspServer::ConnectToWifi(const char* ssid, const char* password)
+void EspServer::ConnectToWifi(char* ssid, char* password)
 {
   PrintSerial->print("Connecting to ");
   PrintSerial->println(ssid);

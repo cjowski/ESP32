@@ -22,19 +22,26 @@ void EspServer::Setup()
     },
     NULL,
     [=](AsyncWebServerRequest * request, uint8_t *data, size_t len, size_t index, size_t total) {
-      std::string *serializedJson = new std::string((char *)data); /* construct on the heap */
-      PrintSerial->println(serializedJson->c_str());
+      std::string *serializedJson = new std::string((char *)data);
       DynamicJsonDocument wifiCredentials(120);
       deserializeJson(wifiCredentials, serializedJson->c_str());
       const char* ssid = wifiCredentials["ssid"];
       const char* password = wifiCredentials["password"];
+      PrintSerial->println();
       PrintSerial->println("SSID: " + String(ssid));
       PrintSerial->println("Password: " + String(password));
-      ConnectToWifi(
+
+      DynamicJsonDocument outputJson(120);
+      outputJson["wifiConnectionStatus"] = ConnectToWifi(
         (char*)ssid,
         (char*)password
       );
+
       delete serializedJson;
+
+      String outputSerializedJson;
+      serializeJson(outputJson, outputSerializedJson);
+      request->send(200, JSON_CONTENT_TYPE, outputSerializedJson);
     }
   );
 
@@ -63,19 +70,43 @@ void EspServer::SetAccessPoint(char* ssid, char* password)
   PrintSerial->println(myIP);
 }
 
-void EspServer::ConnectToWifi(char* ssid, char* password)
+EspServer::WifiConnectionStatus EspServer::ConnectToWifi(char* ssid, char* password)
 {
+  if (!WifiSSID.isEmpty() && WifiSSID.equals(ssid)) {
+    PrintSerial->println("");
+    PrintSerial->print("Already connected to WiFi: ");
+    PrintSerial->println(ssid);
+    return WifiConnectionStatus::alreadyConnected;
+  }
+
+  if (WiFi.isConnected()) {
+    if (WiFi.disconnect(true, false)) {
+      PrintSerial->println("");
+      PrintSerial->print("Disconnected: ");
+      PrintSerial->println(WifiSSID);
+      WifiSSID = "";
+      WifiPassword = "";
+    }
+  }
+
+  PrintSerial->println("");
   PrintSerial->print("Connecting to ");
   PrintSerial->println(ssid);
   WiFi.begin(ssid, password);
 
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    PrintSerial->print(".");
+  if (WiFi.waitForConnectResult() != WL_CONNECTED) {
+    PrintSerial->println("");
+    PrintSerial->println("WiFi connection failed.");
+    return WifiConnectionStatus::connectionFailed;
   }
+
+  WifiSSID = String(ssid);
+  WifiPassword = String(password);
 
   PrintSerial->println("");
   PrintSerial->println("WiFi connected.");
   PrintSerial->println("IP address: ");
   PrintSerial->println(WiFi.localIP());
+
+  return WifiConnectionStatus::connected;
 }

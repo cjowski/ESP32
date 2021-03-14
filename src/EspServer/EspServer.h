@@ -14,7 +14,17 @@
     private:
     const char* JSON_CONTENT_TYPE = "application/json";
     const char* CONNECTED_JSON = "{ \"connected\": true }";
+    const char* WIFI_CONNECTED_JSON = "{ \"connected\": true }";
     const char* NULL_JSON = "null";
+
+    enum WifiConnectionStatus {
+      connected,
+      alreadyConnected,
+      connectionFailed
+    };
+    
+    String WifiSSID;
+    String WifiPassword;
     AsyncWebServer *Server;
     HardwareSerial *PrintSerial;
 
@@ -24,7 +34,7 @@
     EspServer(int serverPort, HardwareSerial *printSerial);
     void Setup();
     void SetAccessPoint(char* ssid, char* password);
-    void ConnectToWifi(char* ssid, char* password);
+    WifiConnectionStatus ConnectToWifi(char* ssid, char* password);
   };
 
 #endif

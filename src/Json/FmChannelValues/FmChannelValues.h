@@ -1,7 +1,6 @@
 #ifndef FM_CHANNEL_VALUES_H
 #define FM_CHANNEL_VALUES_H
 
-  #include <list>
   #include <ArduinoJson.h>
   #include "Json/SerialJson.h"
 
@@ -17,9 +16,10 @@
     static bool IsInteger(String text);
 
     public:
-    static const char SERIAL_PRINT_KEY = 'F';
+    char SerialPrintKey() const { return 'F'; }
+    FmChannelValues() { };
     FmChannelValues(String serialReadText);
-    static bool SerialReadTextValid(String serialReadText);
+    bool SerialReadTextValid(String serialReadText);
     DynamicJsonDocument GetJson();
   };
 

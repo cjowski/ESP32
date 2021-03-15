@@ -19,13 +19,13 @@ void EspController::Setup(char *ssid, char *password, Mode espMode)
     case Mode::accessPoint:
     {
       MyEspServer->SetAccessPoint(ssid, password);
-      MyEspServer->Setup();
+      MyEspServer->SetupApi();
       break;
     }
     case Mode::wifi:
     {
       MyEspServer->ConnectToWifi(ssid, password);
-      MyEspServer->Setup();
+      MyEspServer->SetupApi();
       break;
     }
     default: {
@@ -45,7 +45,7 @@ void EspController::UpdateEspServerJson()
   if (SerialReaderHasFmChannelValues())
   {
     FmChannelValuesList->Add(MySerialReader->GetRecentReadValue()->GetCopy());
-    MyEspServer->FmChannelValuesJson = SerialJsonContainer(
+    MyEspServer->Storage.FmChannelValuesJson = SerialJsonContainer(
       "FmChannelValues",
       FmChannelValuesList->ToSerialJsonList<FmChannelValues>(),
       JSON_BUFFER_SIZE
@@ -54,7 +54,7 @@ void EspController::UpdateEspServerJson()
   else if (SerialReaderHasGyroValues())
   {
     GyroValuesList->Add(MySerialReader->GetRecentReadValue()->GetCopy());
-    MyEspServer->GyroValuesJson = SerialJsonContainer(
+    MyEspServer->Storage.GyroValuesJson = SerialJsonContainer(
       "GyroValues",
       GyroValuesList->ToSerialJsonList<GyroValues>(),
       JSON_BUFFER_SIZE
@@ -64,16 +64,18 @@ void EspController::UpdateEspServerJson()
 
 bool EspController::SerialReaderHasFmChannelValues()
 {
-  return FmChannelValues::SERIAL_PRINT_KEY == MySerialReader->GetRecentReadValue()->GetSerialPrintKey()
-    && FmChannelValues::SerialReadTextValid(
+  FmChannelValues fmChannelValues = FmChannelValues();
+  return fmChannelValues.SerialPrintKey() == MySerialReader->GetRecentReadValue()->GetSerialPrintKey()
+    && fmChannelValues.SerialReadTextValid(
       MySerialReader->GetRecentReadValue()->ToString()
     );
 }
 
 bool EspController::SerialReaderHasGyroValues()
 {
-  return GyroValues::SERIAL_PRINT_KEY == MySerialReader->GetRecentReadValue()->GetSerialPrintKey()
-    && GyroValues::SerialReadTextValid(
+  GyroValues gyroValues = GyroValues();
+  return gyroValues.SerialPrintKey() == MySerialReader->GetRecentReadValue()->GetSerialPrintKey()
+    && gyroValues.SerialReadTextValid(
       MySerialReader->GetRecentReadValue()->ToString()
     );
 }

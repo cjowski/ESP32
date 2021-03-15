@@ -1,7 +1,6 @@
 #ifndef GYRO_VALUES_H
 #define GYRO_VALUES_H
 
-  #include <list>
   #include <ArduinoJson.h>
   #include "Json/SerialJson.h"
 
@@ -19,9 +18,10 @@
     static bool IsNumber(String text);
 
     public:
-    static const char SERIAL_PRINT_KEY = 'G';
+    char SerialPrintKey() const { return 'G'; }
+    GyroValues() { };
     GyroValues(String serialReadText);
-    static bool SerialReadTextValid(String serialReadText);
+    bool SerialReadTextValid(String serialReadText);
     DynamicJsonDocument GetJson();
   };
 

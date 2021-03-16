@@ -8,7 +8,11 @@ String Json::GetSerializedJson() {
 
 String Json::GetProperty(DynamicJsonDocument json, String name)
 {
-  return String((const char*) json[name]);
+  if (json.containsKey(name))
+  {
+    return String((const char*) json[name]);
+  }
+  return INVALID_PROPERTY;
 }
 
 DynamicJsonDocument Json::Deserialize(String serializedJson, int bufferSize) {

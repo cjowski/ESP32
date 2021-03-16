@@ -6,10 +6,10 @@
   class EspConnection : public Json
   {
     private:
-    static const int JSON_BUFFER_SIZE = 20;
     bool Connected;
 
     public:
+    int JSON_BUFFER_SIZE() const { return 20; };
     EspConnection(bool connected);
     DynamicJsonDocument GetJson();
   };

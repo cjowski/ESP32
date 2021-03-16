@@ -1,14 +1,12 @@
 #ifndef FM_CHANNEL_VALUES_H
 #define FM_CHANNEL_VALUES_H
 
-  #include <ArduinoJson.h>
-  #include "Json/SerialJson.h"
+  #include "Json/Serial/SerialJson.h"
 
   class FmChannelValues : public SerialJson
   {
     private:
     static const int CHANNELS_COUNT = 4;
-    static const int JSON_BUFFER_SIZE = 120;
 
     long Time;
     int FmSignalState;
@@ -16,6 +14,7 @@
     static bool IsInteger(String text);
 
     public:
+    int JSON_BUFFER_SIZE() const { return 120; };
     char SerialPrintKey() const { return 'F'; }
     FmChannelValues() { };
     FmChannelValues(String serialReadText);

@@ -7,11 +7,12 @@
   class WifiConnection : public Json
   {
     private:
-    static const int JSON_BUFFER_SIZE = 20;
     WifiConnectionStatus Status;
 
     public:
+    int JSON_BUFFER_SIZE() const { return 20; };
     WifiConnection(WifiConnectionStatus status);
+    WifiConnection(DynamicJsonDocument json);
     DynamicJsonDocument GetJson();
   };
 

@@ -62,7 +62,7 @@ bool FmChannelValues::SerialReadTextValid(String serialReadText)
 
 DynamicJsonDocument FmChannelValues::GetJson()
 {
-  DynamicJsonDocument outputJson(JSON_BUFFER_SIZE);
+  DynamicJsonDocument outputJson(JSON_BUFFER_SIZE());
 
   outputJson["Time"] = Time;
   outputJson["FmSignalState"] = FmSignalState;

@@ -18,14 +18,16 @@
     HardwareSerial *PrintSerial;
 
     public:
+    enum Mode {
+      accessPoint,
+      wifi
+    };
     EspServerStorage Storage;
     EspServer(int serverPort, HardwareSerial *printSerial);
-    void SetupApi();
     void SetAccessPoint(char* ssid, char* password);
+    void SetupApi();
+    EspApiResponse ProcessApiRequest(EspApiRequest apiRequest);
     WifiConnectionStatus ConnectToWifi(char* ssid, char* password);
-
-    friend class EspAccessPoint;
-    friend class EspWifiStation;
   };
 
 #endif

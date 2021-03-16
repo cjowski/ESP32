@@ -4,6 +4,8 @@
   #include <WiFi.h>
   #include <AsyncTCP.h>
   #include <ESPAsyncWebServer.h>
+  #include "EspApiRequest.h"
+  #include "EspApiResponse.h"
   #include "EspServer/Storage/EspServerStorage.h"
   #include "Json/EspConnection/EspConnection.h"
   #include "Json/WifiConnection/WifiConnection.h"
@@ -13,11 +15,11 @@
   {
     private:
     const char* JSON_CONTENT_TYPE = "application/json";
-    std::function<WifiConnectionStatus(char*, char*)> ConnectToWifi;
     EspServerStorage *Storage;
-
     AsyncWebServer *Server;
     HardwareSerial *PrintSerial;
+    std::function<EspApiResponse(EspApiRequest)> SendRequestToServer;
+
     void Setup();
 
     public:
@@ -25,9 +27,9 @@
       int serverPort,
       EspServerStorage *storage,
       HardwareSerial *printSerial,
-      std::function<WifiConnectionStatus(char*, char*)> connectToWifiCallback
+      std::function<EspApiResponse(EspApiRequest)> sendRequestToServer
     );
-
+    
     friend class EspServer;
   };
 

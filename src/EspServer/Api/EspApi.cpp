@@ -4,13 +4,13 @@ EspApi::EspApi(
   int serverPort,
   EspServerStorage *storage,
   HardwareSerial *printSerial,
-  std::function<WifiConnectionStatus(char*, char*)> connectToWifiCallback
+  std::function<EspApiResponse(EspApiRequest)> sendRequestToServer
 )
 {
   Server = new AsyncWebServer(serverPort);
   Storage = storage;
   PrintSerial = printSerial;
-  ConnectToWifi = connectToWifiCallback;
+  SendRequestToServer = sendRequestToServer;
 }
 
 void EspApi::Setup()
@@ -31,14 +31,16 @@ void EspApi::Setup()
         serializedJson->c_str()
       );
 
-      WifiConnectionStatus status = ConnectToWifi(
-        wifiCredentials.GetSSID(),
-        wifiCredentials.GetPassword()
+      EspApiResponse serverResponse = SendRequestToServer(
+        EspApiRequest {
+          .RequestKey = EspApiRequest::ConnectToWifi,
+          .JsonData = wifiCredentials.GetJson()
+        }
       );
 
       delete serializedJson;
 
-      request->send(200, JSON_CONTENT_TYPE, WifiConnection(status).GetSerializedJson());
+      request->send(200, JSON_CONTENT_TYPE, WifiConnection(serverResponse.JsonData).GetSerializedJson());
     }
   );
 

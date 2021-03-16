@@ -6,23 +6,27 @@ EspController::EspController()
   GyroValuesList = new SerialReadValueList(SERIAL_READ_VALUE_LIST);
 }
 
-void EspController::Setup(char *ssid, char *password, Mode espMode)
+void EspController::SetupSerials()
 {
   Serial.begin(SERIAL_BAUD_RATE);
   Serial2.begin(SERIAL_BAUD_RATE, SERIAL_8N1, SERIAL2_RX_PIN, SERIAL2_TX_PIN);
   Serial2.setRxBufferSize(SERIAL_SIZE_RX);
   MySerialReader = new SerialStringReader(&Serial2);
+}
+
+void EspController::SetupServer(char *ssid, char *password, EspServer::Mode espMode)
+{
   MyEspServer = new EspServer(ESP_SERVER_PORT, &Serial);
 
   switch (espMode)
   {
-    case Mode::accessPoint:
+    case EspServer::Mode::accessPoint:
     {
       MyEspServer->SetAccessPoint(ssid, password);
       MyEspServer->SetupApi();
       break;
     }
-    case Mode::wifi:
+    case EspServer::Mode::wifi:
     {
       MyEspServer->ConnectToWifi(ssid, password);
       MyEspServer->SetupApi();
@@ -32,6 +36,12 @@ void EspController::Setup(char *ssid, char *password, Mode espMode)
       break;
     }
   }
+}
+
+void EspController::Setup(char *ssid, char *password, EspServer::Mode espMode)
+{
+  SetupSerials();
+  SetupServer(ssid, password, espMode);
 }
 
 void EspController::Loop()

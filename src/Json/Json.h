@@ -8,6 +8,8 @@
     public:
     Json() { };
     virtual ~Json() { };
+    const String INVALID_PROPERTY = "INVALID_PROPERTY";
+    virtual int JSON_BUFFER_SIZE() const = 0;
     
     virtual DynamicJsonDocument GetJson() = 0;
     

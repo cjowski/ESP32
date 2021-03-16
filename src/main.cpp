@@ -13,7 +13,7 @@ void setup() {
   espController->Setup(
     (char*)SSID,
     (char*)PASSWORD,
-    EspController::Mode::accessPoint
+    EspServer::Mode::accessPoint
   );
   delay(250);
 }

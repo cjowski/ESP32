@@ -1,10 +1,10 @@
 #ifndef SERIAL_READ_VALUE_LIST_H
 #define SERIAL_READ_VALUE_LIST_H
 
-  #include "SerialReadValue.h"
-  #include "Json/SerialJson.h"
   #include <list>
   #include <WString.h>
+  #include "SerialReadValue.h"
+  #include "Json/Serial/SerialJson.h"
 
   class SerialReadValueList
   {

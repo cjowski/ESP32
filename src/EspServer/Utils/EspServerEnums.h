@@ -4,7 +4,8 @@
   enum WifiConnectionStatus {
     connected,
     alreadyConnected,
-    connectionFailed
+    connectionFailed,
+    invalidJson
   };
 
 #endif

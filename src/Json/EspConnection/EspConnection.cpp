@@ -7,7 +7,7 @@ EspConnection::EspConnection(bool connected)
 
 DynamicJsonDocument EspConnection::GetJson()
 {
-  DynamicJsonDocument outputJson(JSON_BUFFER_SIZE);
+  DynamicJsonDocument outputJson(JSON_BUFFER_SIZE());
   outputJson["Connected"] = Connected;
   return outputJson;
 }

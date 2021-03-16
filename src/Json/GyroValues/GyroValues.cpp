@@ -67,7 +67,7 @@ bool GyroValues::SerialReadTextValid(String serialReadText)
 
 DynamicJsonDocument GyroValues::GetJson()
 {
-  DynamicJsonDocument outputJson(JSON_BUFFER_SIZE);
+  DynamicJsonDocument outputJson(JSON_BUFFER_SIZE());
 
   outputJson["Time"] = Time;
   outputJson["CalibrationDone"] = CalibrationDone;

@@ -6,7 +6,7 @@
   #include "EspServer\EspServer.h"
   #include "Json\GyroValues\GyroValues.h"
   #include "Json\FmChannelValues\FmChannelValues.h"
-  #include "Json\SerialJsonContainer.h"
+  #include "Json\Serial\SerialJsonContainer.h"
 
   #define SERIAL2_RX_PIN 16
   #define SERIAL2_TX_PIN 17
@@ -26,14 +26,15 @@
     SerialReadValueList *FmChannelValuesList;
     SerialReadValueList *GyroValuesList;
 
+    void SetupSerials();
+    void SetupServer(char *ssid, char *password, EspServer::Mode espMode);
     void UpdateEspServerJson();
     bool SerialReaderHasFmChannelValues();
     bool SerialReaderHasGyroValues();
 
     public:
-    enum Mode { accessPoint, wifi };
     EspController();
-    void Setup(char *ssid, char *password, Mode espMode);
+    void Setup(char *ssid, char *password, EspServer::Mode espMode);
     void Loop();
   };
   

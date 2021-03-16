@@ -6,12 +6,13 @@
   class WifiCredentials : public Json
   {
     private:
-    static const int JSON_BUFFER_SIZE = 120;
     String SSID;
     String Password;
 
     public:
+    int JSON_BUFFER_SIZE() const { return 120; };
     WifiCredentials(String ssid, String password);
+    WifiCredentials(DynamicJsonDocument json);
     WifiCredentials(String serializedJson);
     DynamicJsonDocument GetJson();
     char* GetSSID();

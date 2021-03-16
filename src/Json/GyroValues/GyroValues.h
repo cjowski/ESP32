@@ -2,13 +2,12 @@
 #define GYRO_VALUES_H
 
   #include <ArduinoJson.h>
-  #include "Json/SerialJson.h"
+  #include "Json/Serial/SerialJson.h"
 
   class GyroValues : public SerialJson
   {
     private:
     static const int SERIAL_TEXT_WORDS_COUNT = 5;
-    static const int JSON_BUFFER_SIZE = 120;
 
     long Time;
     bool CalibrationDone;
@@ -18,6 +17,7 @@
     static bool IsNumber(String text);
 
     public:
+    int JSON_BUFFER_SIZE() const { return 120; };
     char SerialPrintKey() const { return 'G'; }
     GyroValues() { };
     GyroValues(String serialReadText);

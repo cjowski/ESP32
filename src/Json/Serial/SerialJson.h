@@ -1,7 +1,7 @@
 #ifndef SERIAL_JSON_H
 #define SERIAL_JSON_H
 
-  #include "Json.h"
+  #include "Json/Json.h"
 
   class SerialJson : Json
   {

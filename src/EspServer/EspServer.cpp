@@ -15,6 +15,7 @@ EspServer::EspServer(int serverPort, HardwareSerial *printSerial)
   );
 
   PrintSerial = printSerial;
+  Storage = EspServerStorage();
 }
 
 void EspServer::SetAccessPoint(char* ssid, char* password)

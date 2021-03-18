@@ -49,11 +49,11 @@ void EspApi::Setup()
   });
 
   Server->on("/fm", HTTP_GET, [=](AsyncWebServerRequest *request) {
-    request->send(200, JSON_CONTENT_TYPE, Storage->FmChannelValuesJson);
+    request->send(200, JSON_CONTENT_TYPE, Storage->FmChannelValuesContainer->GetSerializedJson());
   });
 
   Server->on("/gyro", HTTP_GET, [=](AsyncWebServerRequest *request) {
-    request->send(200, JSON_CONTENT_TYPE, Storage->GyroValuesJson);
+    request->send(200, JSON_CONTENT_TYPE, Storage->GyroValuesContainer->GetSerializedJson());
   });
 
   Server->begin();

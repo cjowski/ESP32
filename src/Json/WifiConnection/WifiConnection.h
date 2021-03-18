@@ -14,6 +14,7 @@
     WifiConnection(WifiConnectionStatus status);
     WifiConnection(DynamicJsonDocument json);
     DynamicJsonDocument GetJson();
+    bool Equals(Json *otherJson) { return true; } //TODO
   };
 
 #endif

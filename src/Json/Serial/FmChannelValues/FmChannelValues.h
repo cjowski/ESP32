@@ -1,9 +1,9 @@
 #ifndef FM_CHANNEL_VALUES_H
 #define FM_CHANNEL_VALUES_H
 
-  #include "Json/Serial/SerialJson.h"
+  #include "Json/Json.h"
 
-  class FmChannelValues : public SerialJson
+  class FmChannelValues : public Json
   {
     private:
     static const int CHANNELS_COUNT = 4;
@@ -15,11 +15,10 @@
 
     public:
     int JSON_BUFFER_SIZE() const { return 120; };
-    char SerialPrintKey() const { return 'F'; }
     FmChannelValues() { };
-    FmChannelValues(String serialReadText);
-    bool SerialReadTextValid(String serialReadText);
+    FmChannelValues(String serialValue);
     DynamicJsonDocument GetJson();
+    bool Equals(Json *otherJson);
   };
 
 #endif

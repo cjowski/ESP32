@@ -17,6 +17,7 @@
     DynamicJsonDocument GetJson();
     char* GetSSID();
     char* GetPassword();
+    bool Equals(Json *otherJson) { return true; } //TODO
   };
 
 #endif

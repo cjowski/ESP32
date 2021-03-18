@@ -1,10 +1,6 @@
 #include "EspController.h"
 
-EspController::EspController()
-{
-  FmChannelValuesList = new SerialReadValueList(SERIAL_READ_VALUE_LIST);
-  GyroValuesList = new SerialReadValueList(SERIAL_READ_VALUE_LIST);
-}
+EspController::EspController() { }
 
 void EspController::SetupSerials()
 {
@@ -47,45 +43,10 @@ void EspController::Setup(char *ssid, char *password, EspServer::Mode espMode)
 void EspController::Loop()
 {
   MySerialReader->Read();
-  UpdateEspServerJson();
-}
-
-void EspController::UpdateEspServerJson()
-{
-  if (SerialReaderHasFmChannelValues())
-  {
-    FmChannelValuesList->Add(MySerialReader->GetRecentReadValue()->GetCopy());
-    MyEspServer->Storage.FmChannelValuesJson = SerialJsonContainer(
-      "FmChannelValues",
-      FmChannelValuesList->ToSerialJsonList<FmChannelValues>(),
-      JSON_BUFFER_SIZE
-    ).GetSerializedJson();
-  }
-  else if (SerialReaderHasGyroValues())
-  {
-    GyroValuesList->Add(MySerialReader->GetRecentReadValue()->GetCopy());
-    MyEspServer->Storage.GyroValuesJson = SerialJsonContainer(
-      "GyroValues",
-      GyroValuesList->ToSerialJsonList<GyroValues>(),
-      JSON_BUFFER_SIZE
-    ).GetSerializedJson();
-  }
-}
-
-bool EspController::SerialReaderHasFmChannelValues()
-{
-  FmChannelValues fmChannelValues = FmChannelValues();
-  return fmChannelValues.SerialPrintKey() == MySerialReader->GetRecentReadValue()->GetSerialPrintKey()
-    && fmChannelValues.SerialReadTextValid(
-      MySerialReader->GetRecentReadValue()->ToString()
-    );
-}
-
-bool EspController::SerialReaderHasGyroValues()
-{
-  GyroValues gyroValues = GyroValues();
-  return gyroValues.SerialPrintKey() == MySerialReader->GetRecentReadValue()->GetSerialPrintKey()
-    && gyroValues.SerialReadTextValid(
-      MySerialReader->GetRecentReadValue()->ToString()
-    );
+  MyEspServer->Storage.AddSerialValue(
+    SerialValueInterpreter::GetSerialValueType(
+      MySerialReader->GetRecentReadValue()
+    ),
+    MySerialReader->GetRecentReadValue()->GetCopy().ToString()
+  );
 }

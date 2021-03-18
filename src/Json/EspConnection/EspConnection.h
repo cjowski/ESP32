@@ -12,6 +12,7 @@
     int JSON_BUFFER_SIZE() const { return 20; };
     EspConnection(bool connected);
     DynamicJsonDocument GetJson();
+    bool Equals(Json *otherJson) { return true; } //TODO
   };
 
 #endif

@@ -12,7 +12,13 @@ void EspController::SetupSerials()
 
 void EspController::SetupServer(char *ssid, char *password, EspServer::Mode espMode)
 {
-  MyEspServer = new EspServer(ESP_SERVER_PORT, &Serial);
+  MyEspServer = new EspServer(
+    ESP_SERVER_PORT,
+    &Serial,
+    [&] (ApiRequest *apiRequest) -> ControllerApiResponse* {
+      return ProcessApiRequest(apiRequest);
+    }
+  );
 
   switch (espMode)
   {
@@ -34,6 +40,14 @@ void EspController::SetupServer(char *ssid, char *password, EspServer::Mode espM
   }
 }
 
+ControllerApiResponse *EspController::ProcessApiRequest(ApiRequest *apiRequest)
+{
+  return new ControllerApiResponse(
+    ControllerApiResponse::InvalidRequestKey,
+    new EmptyJson()
+  );
+}
+
 void EspController::Setup(char *ssid, char *password, EspServer::Mode espMode)
 {
   SetupSerials();
@@ -47,6 +61,6 @@ void EspController::Loop()
     SerialValueInterpreter::GetSerialValueType(
       MySerialReader->GetRecentReadValue()
     ),
-    MySerialReader->GetRecentReadValue()->GetCopy().ToString()
+    MySerialReader->GetRecentReadValue()->ToString()
   );
 }

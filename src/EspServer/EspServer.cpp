@@ -1,6 +1,10 @@
 #include "EspServer.h"
 
-EspServer::EspServer(int serverPort, HardwareSerial *printSerial)
+EspServer::EspServer(
+  int serverPort,
+  HardwareSerial *printSerial,
+  std::function<ControllerApiResponse*(ApiRequest*)> sendRequestToController
+)
 {
   AccessPoint = new EspAccessPoint(printSerial);
   WifiStation = new EspWifiStation(printSerial);
@@ -9,16 +13,17 @@ EspServer::EspServer(int serverPort, HardwareSerial *printSerial)
     serverPort,
     &Storage,
     printSerial,
-    [&] (EspApiRequest apiRequest) -> EspApiResponse {
+    [&] (ApiRequest *apiRequest) -> ServerApiResponse* {
       return ProcessApiRequest(apiRequest);
-    }
+    },
+    sendRequestToController
   );
 
   PrintSerial = printSerial;
   Storage = EspServerStorage();
 }
 
-void EspServer::SetAccessPoint(char* ssid, char* password)
+void EspServer::SetAccessPoint(char *ssid, char *password)
 {
   AccessPoint->Connect(ssid, password);
 }
@@ -28,28 +33,28 @@ void EspServer::SetupApi()
   Api->Setup();
 }
 
-WifiConnectionStatus EspServer::ConnectToWifi(char* ssid, char* password)
+WifiConnectionStatus EspServer::ConnectToWifi(char *ssid, char *password)
 {
   return WifiStation->Connect(ssid, password);
 }
 
-EspApiResponse EspServer::ProcessApiRequest(EspApiRequest apiRequest)
+ServerApiResponse *EspServer::ProcessApiRequest(ApiRequest *apiRequest)
 {
-  if (apiRequest.RequestKey == EspApiRequest::ConnectToWifi) {
-    WifiCredentials wifiCredentials = WifiCredentials(apiRequest.JsonData);
+  if (apiRequest->RequestKey == ApiRequest::ConnectToWifi) {
+    WifiCredentials *wifiCredentials = (WifiCredentials*)(apiRequest->JsonData);
     WifiConnectionStatus status = ConnectToWifi(
-      wifiCredentials.GetSSID(),
-      wifiCredentials.GetPassword()
+      wifiCredentials->GetSSID(),
+      wifiCredentials->GetPassword()
     );
 
-    return EspApiResponse {
-      .ResponseKey = EspApiResponse::WifiConnection,
-      .JsonData = WifiConnection(status).GetJson()
-    };
+    return new ServerApiResponse(
+      ServerApiResponse::WifiConnection,
+      new WifiConnection(status)
+    );
   }
 
-  return EspApiResponse {
-    .ResponseKey = EspApiResponse::InvalidRequestKey,
-    .JsonData = DynamicJsonDocument(0)
-  };
+  return new ServerApiResponse(
+    ServerApiResponse::InvalidRequestKey,
+    new EmptyJson()
+  );
 }

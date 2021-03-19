@@ -1,9 +1,9 @@
 #ifndef ESP_API_REQUEST_H
 #define ESP_API_REQUEST_H
 
-  #include <ArduinoJson.h>
+  #include "Json/Json.h"
 
-  struct EspApiRequest
+  class ApiRequest
   {
     public:
     enum ApiRequestKey
@@ -12,7 +12,10 @@
     };
 
     ApiRequestKey RequestKey;
-    DynamicJsonDocument JsonData;
+    Json *JsonData;
+
+    ApiRequest(ApiRequestKey requestKey, Json *jsonData);
+    ~ApiRequest();
   };
 
 #endif

@@ -5,13 +5,6 @@ SerialReadValue::SerialReadValue()
   TextValue = "";
 }
 
-SerialReadValue SerialReadValue::GetCopy()
-{
-  SerialReadValue copy;
-  copy.SetNewTextValue(SerialPrintKey, TextValue);
-  return copy;
-}
-
 bool SerialReadValue::Equals(SerialReadValue valueToCompare)
 {
   return TextValue.equals(valueToCompare.ToString());
@@ -36,6 +29,6 @@ String SerialReadValue::ToString()
   }
   else
   {
-    return (char *)"empty";
+    return SERIAL_READ_VALUE;
   }
 }

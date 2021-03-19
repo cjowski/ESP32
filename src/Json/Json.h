@@ -15,6 +15,7 @@
     virtual bool Equals(Json *otherJson) = 0;
     
     String GetSerializedJson();
+    static String GetSerializedJson(DynamicJsonDocument json);
     String GetProperty(DynamicJsonDocument json, String name);
     DynamicJsonDocument Deserialize(String serializedJson, int bufferSize);
   };

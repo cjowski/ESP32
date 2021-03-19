@@ -4,13 +4,15 @@ EspApi::EspApi(
   int serverPort,
   EspServerStorage *storage,
   HardwareSerial *printSerial,
-  std::function<EspApiResponse(EspApiRequest)> sendRequestToServer
+  std::function<ServerApiResponse*(ApiRequest*)> sendRequestToServer,
+  std::function<ControllerApiResponse*(ApiRequest*)> sendRequestToController
 )
 {
   Server = new AsyncWebServer(serverPort);
   Storage = storage;
   PrintSerial = printSerial;
   SendRequestToServer = sendRequestToServer;
+  SendRequestToController = sendRequestToController;
 }
 
 void EspApi::Setup()
@@ -27,20 +29,24 @@ void EspApi::Setup()
     [=](AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total) {
       std::string *serializedJson = new std::string((char*)data);
 
-      WifiCredentials wifiCredentials = WifiCredentials(
-        serializedJson->c_str()
+      ApiRequest *apiRequest = new ApiRequest(
+        ApiRequest::ConnectToWifi,
+        new WifiCredentials(
+          serializedJson->c_str()
+        )
       );
 
-      EspApiResponse serverResponse = SendRequestToServer(
-        EspApiRequest {
-          .RequestKey = EspApiRequest::ConnectToWifi,
-          .JsonData = wifiCredentials.GetJson()
-        }
+      ServerApiResponse *serverApiResponse = SendRequestToServer(
+        apiRequest
       );
+
+      String serializedJsonData = serverApiResponse->JsonData->GetSerializedJson();
 
       delete serializedJson;
+      delete apiRequest;
+      delete serverApiResponse;
 
-      request->send(200, JSON_CONTENT_TYPE, WifiConnection(serverResponse.JsonData).GetSerializedJson());
+      request->send(200, JSON_CONTENT_TYPE, serializedJsonData);
     }
   );
 

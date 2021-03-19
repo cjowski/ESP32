@@ -6,6 +6,13 @@ String Json::GetSerializedJson() {
   return serializedJson;
 };
 
+String Json::GetSerializedJson(DynamicJsonDocument json)
+{
+  String serializedJson;
+  serializeJson(json, serializedJson);
+  return serializedJson;
+}
+
 String Json::GetProperty(DynamicJsonDocument json, String name)
 {
   if (json.containsKey(name))

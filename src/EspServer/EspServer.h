@@ -23,11 +23,15 @@
       wifi
     };
     EspServerStorage Storage;
-    EspServer(int serverPort, HardwareSerial *printSerial);
-    void SetAccessPoint(char* ssid, char* password);
+    EspServer(
+      int serverPort,
+      HardwareSerial *printSerial,
+      std::function<ControllerApiResponse*(ApiRequest*)> sendRequestToController
+    );
+    void SetAccessPoint(char *ssid, char *password);
     void SetupApi();
-    EspApiResponse ProcessApiRequest(EspApiRequest apiRequest);
-    WifiConnectionStatus ConnectToWifi(char* ssid, char* password);
+    ServerApiResponse *ProcessApiRequest(ApiRequest *apiRequest);
+    WifiConnectionStatus ConnectToWifi(char *ssid, char *password);
   };
 
 #endif

@@ -6,6 +6,7 @@
   class SerialReadValue
   {
     private:
+    const String SERIAL_READ_VALUE = "EMPTY";
     char SerialPrintKey;
     String TextValue;
 
@@ -13,7 +14,6 @@
     SerialReadValue();
     bool Equals(SerialReadValue valueToCompare);
     void SetNewTextValue(char serialPrintKey, String textValue);
-    SerialReadValue GetCopy();
     char GetSerialPrintKey();
     String ToString();
   };

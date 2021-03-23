@@ -29,6 +29,6 @@ String SerialReadValue::ToString()
   }
   else
   {
-    return SERIAL_READ_VALUE;
+    return SERIAL_TEXT_VALUE_EMPTY;
   }
 }

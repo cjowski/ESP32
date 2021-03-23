@@ -9,11 +9,13 @@ JsonContainer::JsonContainer(String name, int maxListCount, int jsonListBufferSi
 
 void JsonContainer::AddToContainer(Json *newElement)
 {
-  if (!Container.back()->Equals(newElement))
+  if (Container.empty() || !Container.back()->Equals(newElement))
   {
     if (Container.size() == MaxListCount)
     {
+      Json *frontElement = Container.front();
       Container.pop_front();
+      delete frontElement;
     }
 
     Container.push_back(newElement);

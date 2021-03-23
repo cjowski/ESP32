@@ -6,7 +6,7 @@
   class SerialReadValue
   {
     private:
-    const String SERIAL_READ_VALUE = "EMPTY";
+    const String SERIAL_TEXT_VALUE_EMPTY = "EMPTY";
     char SerialPrintKey;
     String TextValue;
 

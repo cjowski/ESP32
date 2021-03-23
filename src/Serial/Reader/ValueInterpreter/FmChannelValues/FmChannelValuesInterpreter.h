@@ -2,7 +2,7 @@
 #define FM_CHANNEL_VALUES_INTERPRETER_H
 
   #include <WString.h>
-  #include "SerialReader/Value/SerialReadValue.h"
+  #include "Serial/Reader/Value/SerialReadValue.h"
 
   class FmChannelValuesInterpreter
   {

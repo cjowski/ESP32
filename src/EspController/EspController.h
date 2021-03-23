@@ -2,8 +2,8 @@
 #define ESP_CONTROLLER_H
 
   #include "EspServer/EspServer.h"
-  #include "SerialReader/Read/String/SerialStringReader.h"
-  #include "SerialReader/ValueInterpreter/SerialValueInterpreter.h"
+  #include "Serial/Reader/Read/String/SerialStringReader.h"
+  #include "Serial/Reader/ValueInterpreter/SerialValueInterpreter.h"
 
   #define SERIAL2_RX_PIN 16
   #define SERIAL2_TX_PIN 17

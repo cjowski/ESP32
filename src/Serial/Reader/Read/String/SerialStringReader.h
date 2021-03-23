@@ -1,7 +1,7 @@
 #ifndef SERIAL_STRING_READER_H
 #define SERIAL_STRING_READER_H
 
-  #include "SerialReader/Read/SerialReader.h"
+  #include "Serial/Reader/Read/SerialReader.h"
   #include <WString.h>
 
   #define INPUT_STRING_SIZE 50

@@ -4,8 +4,8 @@ EspApi::EspApi(
   int serverPort,
   EspServerStorage *storage,
   HardwareSerial *printSerial,
-  std::function<ServerApiResponse*(ApiRequest*)> sendRequestToServer,
-  std::function<ControllerApiResponse*(ApiRequest*)> sendRequestToController
+  std::function<ServerApiResponse*(ServerApiRequest*)> sendRequestToServer,
+  std::function<ControllerApiResponse*(ControllerApiRequest*)> sendRequestToController
 )
 {
   Server = new AsyncWebServer(serverPort);
@@ -29,8 +29,8 @@ void EspApi::Setup()
     [=](AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total) {
       std::string *serializedJson = new std::string((char*)data);
 
-      ApiRequest *apiRequest = new ApiRequest(
-        ApiRequest::ConnectToWifi,
+      ServerApiRequest *apiRequest = new ServerApiRequest(
+        ServerApiRequest::ConnectToWifi,
         new WifiCredentials(
           serializedJson->c_str()
         )
@@ -40,13 +40,13 @@ void EspApi::Setup()
         apiRequest
       );
 
-      String serializedJsonData = serverApiResponse->JsonData->GetSerializedJson();
+      String serverApiResponseJson = serverApiResponse->JsonData->GetSerializedJson();
 
       delete serializedJson;
       delete apiRequest;
       delete serverApiResponse;
 
-      request->send(200, JSON_CONTENT_TYPE, serializedJsonData);
+      request->send(200, JSON_CONTENT_TYPE, serverApiResponseJson);
     }
   );
 
@@ -60,6 +60,25 @@ void EspApi::Setup()
 
   Server->on("/gyro", HTTP_GET, [=](AsyncWebServerRequest *request) {
     request->send(200, JSON_CONTENT_TYPE, Storage->GyroValuesContainer->GetSerializedJson());
+  });
+
+  Server->on("/sayHiToStm", HTTP_GET, [=](AsyncWebServerRequest *request) {
+
+    ControllerApiRequest *apiRequest = new ControllerApiRequest(
+      ControllerApiRequest::SayHiToStm,
+      new EmptyJson()
+    );
+
+    ControllerApiResponse *controllerApiResponse = SendRequestToController(
+      apiRequest
+    );
+
+    String controllerApiResponseJson = controllerApiResponse->JsonData->GetSerializedJson();
+
+    delete apiRequest;
+    delete controllerApiResponse;
+
+    request->send(200, JSON_CONTENT_TYPE, controllerApiResponseJson);
   });
 
   Server->begin();

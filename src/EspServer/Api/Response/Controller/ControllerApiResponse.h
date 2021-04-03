@@ -6,15 +6,17 @@
   class ControllerApiResponse
   {
     public:
-    enum ControllerApiResponseKey
+    enum ResponseKey
     {
-      InvalidRequestKey
+      InvalidRequestKey,
+      TaskInitialized,
+      SayHiToClient
     };
 
-    ControllerApiResponseKey ResponseKey;
+    ResponseKey Key;
     Json *JsonData;
 
-    ControllerApiResponse(ControllerApiResponseKey responseKey, Json *jsonData);
+    ControllerApiResponse(ResponseKey key, Json *jsonData);
     ~ControllerApiResponse();
   };
 

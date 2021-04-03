@@ -26,11 +26,11 @@
     EspServer(
       int serverPort,
       HardwareSerial *printSerial,
-      std::function<ControllerApiResponse*(ApiRequest*)> sendRequestToController
+      std::function<ControllerApiResponse*(ControllerApiRequest*)> sendRequestToController
     );
     void SetAccessPoint(char *ssid, char *password);
     void SetupApi();
-    ServerApiResponse *ProcessApiRequest(ApiRequest *apiRequest);
+    ServerApiResponse *ProcessApiRequest(ServerApiRequest *apiRequest);
     WifiConnectionStatus ConnectToWifi(char *ssid, char *password);
   };
 

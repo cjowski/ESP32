@@ -4,14 +4,17 @@
   #include <WiFi.h>
   #include <AsyncTCP.h>
   #include <ESPAsyncWebServer.h>
-  #include "EspServer/Api/Request/ApiRequest.h"
+  #include "EspServer/Api/Request/Controller/ControllerApiRequest.h"
+  #include "EspServer/Api/Request/Server/ServerApiRequest.h"
   #include "EspServer/Api/Response/Controller/ControllerApiResponse.h"
   #include "EspServer/Api/Response/Server/ServerApiResponse.h"
   #include "EspServer/Storage/EspServerStorage.h"
+  #include "Json/BooleanJson.h"
   #include "Json/EmptyJson.h"
   #include "Json/EspConnection/EspConnection.h"
   #include "Json/WifiConnection/WifiConnection.h"
   #include "Json/WifiCredentials/WifiCredentials.h"
+  #include "Json/SayHiStmResponse/SayHiStmResponse.h"
 
   class EspApi
   {
@@ -20,8 +23,8 @@
     EspServerStorage *Storage;
     AsyncWebServer *Server;
     HardwareSerial *PrintSerial;
-    std::function<ServerApiResponse*(ApiRequest*)> SendRequestToServer;
-    std::function<ControllerApiResponse*(ApiRequest*)> SendRequestToController;
+    std::function<ServerApiResponse*(ServerApiRequest*)> SendRequestToServer;
+    std::function<ControllerApiResponse*(ControllerApiRequest*)> SendRequestToController;
 
     void Setup();
 
@@ -30,8 +33,8 @@
       int serverPort,
       EspServerStorage *storage,
       HardwareSerial *printSerial,
-      std::function<ServerApiResponse*(ApiRequest*)> sendRequestToServer,
-      std::function<ControllerApiResponse*(ApiRequest*)> sendRequestToController
+      std::function<ServerApiResponse*(ServerApiRequest*)> sendRequestToServer,
+      std::function<ControllerApiResponse*(ControllerApiRequest*)> sendRequestToController
     );
     
     friend class EspServer;

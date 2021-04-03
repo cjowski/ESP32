@@ -1,8 +1,8 @@
 #include "ServerApiResponse.h"
 
-ServerApiResponse::ServerApiResponse(ServerApiResponseKey responseKey, Json *jsonData)
+ServerApiResponse::ServerApiResponse(ResponseKey key, Json *jsonData)
 {
-  ResponseKey = responseKey;
+  Key = key;
   JsonData = jsonData;
 }
 

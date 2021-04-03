@@ -6,16 +6,16 @@
   class ServerApiResponse
   {
     public:
-    enum ServerApiResponseKey
+    enum ResponseKey
     {
       WifiConnection,
       InvalidRequestKey
     };
 
-    ServerApiResponseKey ResponseKey;
+    ResponseKey Key;
     Json *JsonData;
 
-    ServerApiResponse(ServerApiResponseKey responseKey, Json *jsonData);
+    ServerApiResponse(ResponseKey key, Json *jsonData);
     ~ServerApiResponse();
   };
 

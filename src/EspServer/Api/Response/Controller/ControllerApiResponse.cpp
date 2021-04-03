@@ -1,8 +1,8 @@
 #include "ControllerApiResponse.h"
 
-ControllerApiResponse::ControllerApiResponse(ControllerApiResponseKey responseKey, Json *jsonData)
+ControllerApiResponse::ControllerApiResponse(ResponseKey key, Json *jsonData)
 {
-  ResponseKey = responseKey;
+  Key = key;
   JsonData = jsonData;
 }
 

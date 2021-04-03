@@ -3,7 +3,7 @@
 EspServer::EspServer(
   int serverPort,
   HardwareSerial *printSerial,
-  std::function<ControllerApiResponse*(ApiRequest*)> sendRequestToController
+  std::function<ControllerApiResponse*(ControllerApiRequest*)> sendRequestToController
 )
 {
   AccessPoint = new EspAccessPoint(printSerial);
@@ -13,7 +13,7 @@ EspServer::EspServer(
     serverPort,
     &Storage,
     printSerial,
-    [&] (ApiRequest *apiRequest) -> ServerApiResponse* {
+    [&] (ServerApiRequest *apiRequest) -> ServerApiResponse* {
       return ProcessApiRequest(apiRequest);
     },
     sendRequestToController
@@ -38,9 +38,9 @@ WifiConnectionStatus EspServer::ConnectToWifi(char *ssid, char *password)
   return WifiStation->Connect(ssid, password);
 }
 
-ServerApiResponse *EspServer::ProcessApiRequest(ApiRequest *apiRequest)
+ServerApiResponse *EspServer::ProcessApiRequest(ServerApiRequest *apiRequest)
 {
-  if (apiRequest->RequestKey == ApiRequest::ConnectToWifi) {
+  if (apiRequest->Key == ServerApiRequest::ConnectToWifi) {
     WifiCredentials *wifiCredentials = (WifiCredentials*)(apiRequest->JsonData);
     WifiConnectionStatus status = ConnectToWifi(
       wifiCredentials->GetSSID(),

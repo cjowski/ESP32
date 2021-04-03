@@ -6,12 +6,14 @@
   #include "Json/JsonContainer.h"
   #include "Json/Serial/FmChannelValues/FmChannelValues.h"
   #include "Json/Serial/GyroValues/GyroValues.h"
+  #include "Json/SayHiStmResponse/SayHiStmResponse.h"
   
   class EspServerStorage
   {
     public:
     JsonContainer *FmChannelValuesContainer;
     JsonContainer *GyroValuesContainer;
+    SayHiStmResponse *SayHeyStmResponse;
 
     EspServerStorage();
     void AddSerialValue(

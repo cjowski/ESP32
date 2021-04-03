@@ -1,6 +1,9 @@
 #include "EspController.h"
 
-EspController::EspController() { }
+EspController::EspController()
+{
+  MyTaskController = new TaskController();
+}
 
 void EspController::SetupSerials()
 {
@@ -15,7 +18,7 @@ void EspController::SetupServer(char *ssid, char *password, EspServer::Mode espM
   MyEspServer = new EspServer(
     ESP_SERVER_PORT,
     &Serial,
-    [&] (ApiRequest *apiRequest) -> ControllerApiResponse* {
+    [&] (ControllerApiRequest *apiRequest) -> ControllerApiResponse* {
       return ProcessApiRequest(apiRequest);
     }
   );
@@ -40,8 +43,23 @@ void EspController::SetupServer(char *ssid, char *password, EspServer::Mode espM
   }
 }
 
-ControllerApiResponse *EspController::ProcessApiRequest(ApiRequest *apiRequest)
+ControllerApiResponse *EspController::ProcessApiRequest(ControllerApiRequest *apiRequest)
 {
+  if (apiRequest->Key == ControllerApiRequest::SayHiToStm)
+  {
+    MyTaskController->AddTask(
+      new SayHiToStmTask(
+        millis(),
+        new SerialPrinter(&Serial2, SERIAL_BAUD_RATE)
+      )
+    );
+
+    return new ControllerApiResponse(
+      ControllerApiResponse::TaskInitialized,
+      new BooleanJson(true)
+    );
+  }
+
   return new ControllerApiResponse(
     ControllerApiResponse::InvalidRequestKey,
     new EmptyJson()
@@ -63,4 +81,5 @@ void EspController::Loop()
     ),
     MySerialReader->GetRecentReadValue()->ToString()
   );
+  MyTaskController->Loop();
 }

@@ -3,6 +3,7 @@
 
   #include "Task/EspTask.h"
   #include "Serial/Printer/SerialPrinter.h"
+  #include "Json/Serial/SayHiToStmMessage/SayHiToStmMessage.h"
 
   class SayHiToStmTask : public EspTask
   {
@@ -10,10 +11,11 @@
     SerialPrinter *Printer;
 
     public:
+    EspTaskType TYPE() const { return EspTaskType::SayHiToStm; };
     int LIFE_TIME() const { return 5000; };
     int LOOP_STEP_DELAY_TIME() const { return 100; };
 
-    SayHiToStmTask(int startTime, SerialPrinter *serialPrinter);
+    SayHiToStmTask(int id, int startTime, SerialPrinter *serialPrinter);
     void Loop();
   };
 

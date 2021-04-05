@@ -7,24 +7,16 @@ EspServerStorage::EspServerStorage()
   SayHeyStmResponse = new SayHiStmResponse();
 }
 
-void EspServerStorage::AddSerialValue(
-  SerialValueInterpreter::SerialValueType serialValueType,
-  String serialValue
-)
+void EspServerStorage::AddFmChannelValues(FmChannelValues *fmChannelValues)
 {
-  switch(serialValueType)
-  {
-    case SerialValueInterpreter::FmChannelValuesJson:
-      FmChannelValuesContainer->AddToContainer(
-        new FmChannelValues(serialValue)
-      );
-      break;
-    case SerialValueInterpreter::GyroValuesJson:
-      GyroValuesContainer->AddToContainer(
-        new GyroValues(serialValue)
-      );
-      break;
-    default:
-      break;
-  }
+  FmChannelValuesContainer->AddToContainer(
+    fmChannelValues
+  );
+}
+
+void EspServerStorage::AddGyroValues(GyroValues *gyroValues)
+{
+  GyroValuesContainer->AddToContainer(
+    gyroValues
+  );
 }

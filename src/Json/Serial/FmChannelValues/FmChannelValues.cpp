@@ -1,26 +1,22 @@
 #include "FmChannelValues.h"
 
-FmChannelValues::FmChannelValues(String serialValue)
+FmChannelValues::FmChannelValues(std::list<String> serialValues)
 {
-  int currentIndex = serialValue.indexOf(' ');
-  Time = serialValue.substring(0, currentIndex).toInt();
-  int previousIndex = currentIndex + 1;
-
-  currentIndex = serialValue.indexOf(' ', previousIndex + 1);
-  FmSignalState = serialValue.substring(previousIndex, currentIndex).toInt();
-  previousIndex = currentIndex + 1;
-
-  for (int i = 0; i < CHANNELS_COUNT; i++)
+  auto it = serialValues.begin();
+  Time = (*it).toInt();
+  it++;
+  FmSignalState = (*it).toInt();
+  it++;
+  for (int i = 0; i < CHANNELS_COUNT; i++, it++)
   {
-    currentIndex = serialValue.indexOf(' ', previousIndex + 1);
-    ChannelValues[i] = serialValue.substring(previousIndex, currentIndex).toInt();
-    previousIndex = currentIndex + 1;
+    ChannelValues[i] = (*it).toInt();
   }
 }
 
 bool FmChannelValues::IsInteger(String text) {
   for(char i = 0; i < text.length(); i++) {
-    if (!isDigit(text.charAt(i))) {
+    char currentChar = text.charAt(i);
+    if (!isDigit(currentChar) && currentChar != '-') {
       return false;
     }
   }
@@ -45,4 +41,28 @@ bool FmChannelValues::Equals(Json *otherJson)
 {
   String otherTimeString = otherJson->GetProperty(otherJson->GetJson(), "Time");
   return IsInteger(otherTimeString) && Time == otherTimeString.toInt();
+}
+
+bool FmChannelValues::SerialValuesMatched(std::list<String> serialValues)
+{
+  if (serialValues.size() != SERIAL_VALUES_COUNT())
+  {
+    return false;
+  }
+
+  for (auto it = serialValues.begin(); it != serialValues.end(); it++)
+  {
+    if (!IsInteger(*it))
+    {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+std::list<String> FmChannelValues::GetPrintStrings()
+{
+  std::list<String> printStrings;
+  return printStrings;
 }

@@ -1,17 +1,16 @@
 #include "SerialPrinter.h"
 
-SerialPrinter::SerialPrinter(HardwareSerial *printSerial, int serialBaudRate)
+SerialPrinter::SerialPrinter(HardwareSerial *printSerial)
 {
   PrintSerial = printSerial;
-  SerialBaudRate = serialBaudRate;
 }
 
-void SerialPrinter::Print(SerialPrintValue value)
+void SerialPrinter::Print(SerialValue *value)
 {
-  PrintSerial->print(value.GetValue());
+  PrintSerial->print(value->ToSerialString());
 }
 
-void SerialPrinter::Println(SerialPrintValue value)
+void SerialPrinter::Println(SerialValue *value)
 {
-  PrintSerial->println(value.GetValue());
+  PrintSerial->println(value->ToSerialString());
 }

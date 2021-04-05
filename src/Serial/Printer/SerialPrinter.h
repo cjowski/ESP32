@@ -2,18 +2,17 @@
 #define SERIAL_PRINTER_H
 
   #include <HardwareSerial.h>
-  #include "Serial/Printer/Value/SerialPrintValue.h"
+  #include "Serial/Value/SerialValue.h"
 
   class SerialPrinter
   {
-    public:
-    SerialPrinter(HardwareSerial *printSerial, int serialBaudRate);
-    void Print(SerialPrintValue value);
-    void Println(SerialPrintValue value);
-
     private:
     HardwareSerial *PrintSerial;
-    int SerialBaudRate;
+    
+    public:
+    SerialPrinter(HardwareSerial *printSerial);
+    void Print(SerialValue *value);
+    void Println(SerialValue *value);
   };
 
 #endif

@@ -4,12 +4,19 @@
   class EspTask
   {
     public:
+    enum EspTaskType
+    {
+      SayHiToStm
+    };
+
     EspTask() { };
     virtual ~EspTask() { };
+    int ID = -1;
     bool Done = false;
     int StartTime = 0;
     int PreviousStepTime = 0;
 
+    virtual EspTaskType TYPE() const = 0;
     virtual int LIFE_TIME() const = 0;
     virtual int LOOP_STEP_DELAY_TIME() const = 0;
     virtual void Loop() = 0;

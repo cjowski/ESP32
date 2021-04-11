@@ -8,9 +8,25 @@ SayHiToStmTask::SayHiToStmTask(int id, int startTime, SerialPrinter *serialPrint
   Printer = serialPrinter;
 }
 
+String SayHiToStmTask::GetStmGreeting()
+{
+  return StmGreeting;
+}
+
+bool SayHiToStmTask::ReceivedGreeting()
+{
+  return GreetingSet;
+}
+
+void SayHiToStmTask::SetStmGreeting(String stmGreeting)
+{
+  StmGreeting = stmGreeting;
+  GreetingSet = true;
+}
+
 void SayHiToStmTask::Loop()
 {
-  SayHiToStmMessage *message = new SayHiToStmMessage(5);
+  SayHiToStmMessage *message = new SayHiToStmMessage(ID);
   Printer->Println(message);
   delete message;
 }

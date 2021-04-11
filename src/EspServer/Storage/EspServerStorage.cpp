@@ -4,7 +4,6 @@ EspServerStorage::EspServerStorage()
 {
   FmChannelValuesContainer = new JsonContainer("FmChannelValues", 50, 10000);
   GyroValuesContainer = new JsonContainer("GyroValues", 50, 10000);
-  SayHeyStmResponse = new SayHiStmResponse();
 }
 
 void EspServerStorage::AddFmChannelValues(FmChannelValues *fmChannelValues)

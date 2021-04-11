@@ -8,13 +8,19 @@
     {
       SayHiToStm
     };
+    enum StmTaskType
+    {
+      SayHiToEsp
+    };
 
     EspTask() { };
+    EspTask(int id);
     virtual ~EspTask() { };
     int ID = -1;
     bool Done = false;
     int StartTime = 0;
     int PreviousStepTime = 0;
+    static const char SERIAL_VALUE_KEY = 'T';
 
     virtual EspTaskType TYPE() const = 0;
     virtual int LIFE_TIME() const = 0;

@@ -47,18 +47,37 @@ ControllerApiResponse *EspController::ProcessApiRequest(ControllerApiRequest *ap
 {
   if (apiRequest->Key == ControllerApiRequest::SayHiToStm)
   {
-    MyTaskController->AddTask(
-      new SayHiToStmTask(
-        NextTaskID++,
-        millis(),
-        new SerialPrinter(&Serial2)
-      )
+    SayHiToStmTask *sayHiToStmTask = new SayHiToStmTask(
+      MyTaskController->GetNewTaskID(),
+      millis(),
+      new SerialPrinter(&Serial2)
     );
+
+    MyTaskController->AddTask(sayHiToStmTask);
 
     return new ControllerApiResponse(
       ControllerApiResponse::TaskInitialized,
-      new BooleanJson(true)
+      new TaskStatus(
+        sayHiToStmTask->ID,
+        sayHiToStmTask->Done
+      )
     );
+  }
+  else if (apiRequest->Key == ControllerApiRequest::SayHiToStmStatus)
+  {
+    SayHiToStmTask *sayHiToStmTask = (SayHiToStmTask*)MyTaskController->GetTaskWithID(
+      ((IntegerJson*)(apiRequest->JsonData))->GetValue()
+    );
+    if (sayHiToStmTask != nullptr)
+    {
+      return new ControllerApiResponse(
+        ControllerApiResponse::SayHiStmResponse,
+        new SayHiStmResponse(
+          sayHiToStmTask->GetStmGreeting(),
+          sayHiToStmTask->ReceivedGreeting()
+        )
+      );
+    }
   }
 
   return new ControllerApiResponse(
@@ -75,13 +94,13 @@ void EspController::Setup(char *ssid, char *password, EspServer::Mode espMode)
 
 void EspController::Loop()
 {
-  AddSerialValueToStorage(
+  ProcessSerialValue(
     MySerialReader->Read()
   );
   MyTaskController->Loop();
 }
 
-void EspController::AddSerialValueToStorage(UndefinedSerialValue serialValue)
+void EspController::ProcessSerialValue(UndefinedSerialValue serialValue)
 {
   if (!serialValue.Exists())
   {
@@ -90,7 +109,14 @@ void EspController::AddSerialValueToStorage(UndefinedSerialValue serialValue)
 
   char readValueKey = serialValue.GetReadValueKey();
   std::list<String> serialValues = serialValue.GetPrintStrings();
-  if (FmChannelValues().SerialValueValid(readValueKey, serialValues))
+  if (UndefinedSerialTask().SerialValueValid(readValueKey, serialValues))
+  {
+    ProcessSerialValueTask(
+      UndefinedSerialTask(serialValue)
+    );
+    return;
+  }
+  else if (FmChannelValues().SerialValueValid(readValueKey, serialValues))
   {
     MyEspServer->Storage.AddFmChannelValues(
       new FmChannelValues(serialValues)
@@ -101,5 +127,30 @@ void EspController::AddSerialValueToStorage(UndefinedSerialValue serialValue)
     MyEspServer->Storage.AddGyroValues(
       new GyroValues(serialValues)
     );
+  }
+}
+
+void EspController::ProcessSerialValueTask(UndefinedSerialTask serialTask)
+{
+  if (!MyTaskController->StmTaskProcessed(serialTask.GetTaskID()))
+  {
+    UndefinedSerialValue serialValue = serialTask.GetSerialValue();
+    char readValueKey = serialValue.GetReadValueKey();
+    std::list<String> serialValues = serialValue.GetPrintStrings();
+    if (SayHiToEspMessage().SerialValueValid(readValueKey, serialValues))
+    {
+      SayHiToEspMessage sayHiToEspMessage = SayHiToEspMessage(serialValues);
+      SayHiToStmTask *sayHiToStmTask = (SayHiToStmTask*)MyTaskController->GetTaskWithID(
+        sayHiToEspMessage.GetEspTaskID()
+      );
+      if (sayHiToStmTask != nullptr)
+      {
+        sayHiToStmTask->SetStmGreeting(
+          sayHiToEspMessage.GetGreeting()
+        );
+        Serial.println(sayHiToEspMessage.GetGreeting());
+        MyTaskController->AddProcessedStmTaskID(serialTask.GetTaskID());
+      }
+    }
   }
 }

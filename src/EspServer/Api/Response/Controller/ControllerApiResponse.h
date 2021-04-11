@@ -10,7 +10,7 @@
     {
       InvalidRequestKey,
       TaskInitialized,
-      SayHiToClient
+      SayHiStmResponse
     };
 
     ResponseKey Key;

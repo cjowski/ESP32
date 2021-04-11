@@ -1,19 +1,15 @@
 #include "SayHiStmResponse.h"
 
-SayHiStmResponse::SayHiStmResponse()
+SayHiStmResponse::SayHiStmResponse(String greeting, bool done)
 {
-  Exists = false;
-}
-
-SayHiStmResponse::SayHiStmResponse(String stmMessage)
-{
-  StmMessage = stmMessage;
-  Exists = true;
+  Greeting = greeting;
+  Done = done;
 }
 
 DynamicJsonDocument SayHiStmResponse::GetJson()
 {
   DynamicJsonDocument outputJson(JSON_BUFFER_SIZE());
-  outputJson["StmMessage"] = StmMessage;
+  outputJson["Greeting"] = Greeting;
+  outputJson["Done"] = Done;
   return outputJson;
 }

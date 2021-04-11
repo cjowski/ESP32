@@ -81,5 +81,27 @@ void EspApi::Setup()
     request->send(200, JSON_CONTENT_TYPE, controllerApiResponseJson);
   });
 
+  Server->on("/sayHiToStmStatus", HTTP_GET, [=](AsyncWebServerRequest *request) {
+    
+    request->hasParam("TaskID");
+    int taskID = request->getParam("TaskID")->value().toInt();
+
+    ControllerApiRequest *apiRequest = new ControllerApiRequest(
+      ControllerApiRequest::SayHiToStmStatus,
+      new IntegerJson(taskID)
+    );
+
+    ControllerApiResponse *controllerApiResponse = SendRequestToController(
+      apiRequest
+    );
+
+    String controllerApiResponseJson = controllerApiResponse->JsonData->GetSerializedJson();
+
+    delete apiRequest;
+    delete controllerApiResponse;
+
+    request->send(200, JSON_CONTENT_TYPE, controllerApiResponseJson);
+  });
+
   Server->begin();
 }

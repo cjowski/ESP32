@@ -8,7 +8,8 @@
     public:
     enum RequestKey
     {
-      SayHiToStm
+      SayHiToStm,
+      SayHiToStmStatus
     };
 
     RequestKey Key;

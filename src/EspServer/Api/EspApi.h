@@ -11,6 +11,7 @@
   #include "EspServer/Storage/EspServerStorage.h"
   #include "Json/BooleanJson.h"
   #include "Json/EmptyJson.h"
+  #include "Json/IntegerJson.h"
   #include "Json/EspConnection/EspConnection.h"
   #include "Json/WifiConnection/WifiConnection.h"
   #include "Json/WifiCredentials/WifiCredentials.h"

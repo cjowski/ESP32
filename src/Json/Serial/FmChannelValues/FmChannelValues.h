@@ -19,7 +19,7 @@
 
     public:
     int JSON_BUFFER_SIZE() const { return 120; };
-    int SERIAL_VALUES_COUNT() const { return 6; };
+    int SERIAL_VALUES_COUNT() const { return CHANNELS_COUNT + 2; };
     char SERIAL_VALUE_KEY() const { return 'F'; };
     FmChannelValues() { };
     FmChannelValues(std::list<String> serialValues);

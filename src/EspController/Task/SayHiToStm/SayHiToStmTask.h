@@ -3,19 +3,25 @@
 
   #include "Task/EspTask.h"
   #include "Serial/Printer/SerialPrinter.h"
-  #include "Json/Serial/SayHiToStmMessage/SayHiToStmMessage.h"
+  #include "ToStmMessage/SayHiToStmMessage.h"
+  #include "ToEspMessage/SayHiToEspMessage.h"
 
   class SayHiToStmTask : public EspTask
   {
     private:
     SerialPrinter *Printer;
+    String StmGreeting = "";
+    bool GreetingSet = false;
 
     public:
     EspTaskType TYPE() const { return EspTaskType::SayHiToStm; };
-    int LIFE_TIME() const { return 5000; };
-    int LOOP_STEP_DELAY_TIME() const { return 100; };
+    int LIFE_TIME() const { return 1200; };
+    int LOOP_STEP_DELAY_TIME() const { return 250; };
 
     SayHiToStmTask(int id, int startTime, SerialPrinter *serialPrinter);
+    String GetStmGreeting();
+    bool ReceivedGreeting();
+    void SetStmGreeting(String stmGreeting);
     void Loop();
   };
 

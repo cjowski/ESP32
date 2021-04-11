@@ -1,18 +1,17 @@
-#ifndef SAY_HI_STM_RESPONSE
-#define SAY_HI_STM_RESPONSE
+#ifndef TASK_STATUS_H
+#define TASK_STATUS_H
 
   #include "Json/Json.h"
-  #include "EspServer/Utils/EspServerEnums.h"
 
-  class SayHiStmResponse : public Json
+  class TaskStatus : public Json
   {
     private:
-    String Greeting;
+    int TaskID;
     bool Done;
 
     public:
     int JSON_BUFFER_SIZE() const { return 50; };
-    SayHiStmResponse(String greeting, bool done);
+    TaskStatus(int taskID, bool done);
     DynamicJsonDocument GetJson();
     bool Equals(Json *otherJson) { return false; }
   };

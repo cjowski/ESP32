@@ -2,9 +2,42 @@
 
 TaskController::TaskController() { }
 
+int TaskController::GetNewTaskID()
+{
+  return NextTaskID++;
+}
+
 void TaskController::AddTask(EspTask *newTask)
 {
   Tasks.push_back(newTask);
+}
+
+void TaskController::AddProcessedStmTaskID(int stmTaskID)
+{
+  ProcessedStmTaskIDs.push_back(stmTaskID);
+}
+
+bool TaskController::StmTaskProcessed(int stmTaskID)
+{
+  return std::find(
+    ProcessedStmTaskIDs.begin(),
+    ProcessedStmTaskIDs.end(),
+    stmTaskID
+  ) != ProcessedStmTaskIDs.end();
+}
+
+EspTask* TaskController::GetTaskWithID(int espTaskID)
+{
+  EspTask* foundTask = nullptr;
+  for (auto it = Tasks.begin(); it != Tasks.end(); it++)
+  {
+    if ((*it)->ID == espTaskID)
+    {
+      foundTask = *it;
+      break;
+    }
+  }
+  return foundTask;
 }
 
 void TaskController::Loop()

@@ -11,7 +11,6 @@
     public:
     JsonContainer *FmChannelValuesContainer;
     JsonContainer *GyroValuesContainer;
-    SayHiStmResponse *SayHeyStmResponse;
 
     EspServerStorage();
     void AddFmChannelValues(FmChannelValues *fmChannelValues);

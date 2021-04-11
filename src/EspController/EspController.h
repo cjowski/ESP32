@@ -6,8 +6,11 @@
   #include "Serial/Reader/SerialReader.h"
   #include "Json/Serial/FmChannelValues/FmChannelValues.h"
   #include "Json/Serial/GyroValues/GyroValues.h"
+  #include "Json/TaskStatus/TaskStatus.h"
+  #include "Json/SayHiStmResponse/SayHiStmResponse.h"
   #include "EspController/Task/SayHiToStm/SayHiToStmTask.h"
   #include "Task/TaskController/TaskController.h"
+  #include "Task/UndefinedSerialTask.h"
 
   #define SERIAL2_RX_PIN 16
   #define SERIAL2_TX_PIN 17
@@ -22,7 +25,6 @@
     SerialReader *MySerialReader;
     EspServer *MyEspServer;
     TaskController *MyTaskController;
-    int NextTaskID = 1;
 
     void SetupSerials();
     void SetupServer(char *ssid, char *password, EspServer::Mode espMode);
@@ -32,7 +34,8 @@
     EspController();
     void Setup(char *ssid, char *password, EspServer::Mode espMode);
     void Loop();
-    void AddSerialValueToStorage(UndefinedSerialValue serialValue);
+    void ProcessSerialValue(UndefinedSerialValue serialValue);
+    void ProcessSerialValueTask(UndefinedSerialTask serialTask);
   };
   
 #endif

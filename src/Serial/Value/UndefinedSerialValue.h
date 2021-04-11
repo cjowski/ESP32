@@ -13,6 +13,7 @@
     bool SerialValuesMatched(std::list<String> serialValues) { return false; };
 
     public:
+    UndefinedSerialValue() { };
     UndefinedSerialValue(char readValueKey, std::list<String> values);
     int SERIAL_VALUES_COUNT() const { return -1; };
     char SERIAL_VALUE_KEY() const { return 'U'; };

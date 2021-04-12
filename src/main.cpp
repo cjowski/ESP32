@@ -13,7 +13,7 @@ const char* PASSWORD = "tkr8QejnrMtr";
 EspController *espController = new EspController();
 
 void setup() {
-  espController->Setup(
+  espController->ConnectServer(
     (char*)SSID,
     (char*)PASSWORD,
     EspServer::Mode::wifi

@@ -1,26 +1,52 @@
 #include "EspServer.h"
 
 EspServer::EspServer(
-  int serverPort,
   HardwareSerial *printSerial,
   std::function<ControllerApiResponse*(ControllerApiRequest*)> sendRequestToController
 )
 {
   AccessPoint = new EspAccessPoint(printSerial);
   WifiStation = new EspWifiStation(printSerial);
+  MyServerApiRequestProcessor = new ServerApiRequestProcessor(
+    [&] (char *ssid, char *password) -> WifiConnectionStatus {
+      return ConnectToWifi(ssid, password);
+    }
+  );
 
   Api = new EspApi(
-    serverPort,
+    ESP_SERVER_PORT,
     &Storage,
     printSerial,
     [&] (ServerApiRequest *apiRequest) -> ServerApiResponse* {
-      return ProcessApiRequest(apiRequest);
+      return MyServerApiRequestProcessor->ProcessApiRequest(apiRequest);
     },
     sendRequestToController
   );
 
   PrintSerial = printSerial;
   Storage = EspServerStorage();
+}
+
+void EspServer::Connect(char *ssid, char *password, EspServer::Mode espMode)
+{
+  switch (espMode)
+  {
+    case EspServer::Mode::accessPoint:
+    {
+      SetAccessPoint(ssid, password);
+      SetupApi();
+      break;
+    }
+    case EspServer::Mode::wifi:
+    {
+      ConnectToWifi(ssid, password);
+      SetupApi();
+      break;
+    }
+    default: {
+      break;
+    }
+  }
 }
 
 void EspServer::SetAccessPoint(char *ssid, char *password)
@@ -38,23 +64,7 @@ WifiConnectionStatus EspServer::ConnectToWifi(char *ssid, char *password)
   return WifiStation->Connect(ssid, password);
 }
 
-ServerApiResponse *EspServer::ProcessApiRequest(ServerApiRequest *apiRequest)
+EspServerStorage *EspServer::GetStorage()
 {
-  if (apiRequest->Key == ServerApiRequest::ConnectToWifi) {
-    WifiCredentials *wifiCredentials = (WifiCredentials*)(apiRequest->JsonData);
-    WifiConnectionStatus status = ConnectToWifi(
-      wifiCredentials->GetSSID(),
-      wifiCredentials->GetPassword()
-    );
-
-    return new ServerApiResponse(
-      ServerApiResponse::WifiConnection,
-      new WifiConnection(status)
-    );
-  }
-
-  return new ServerApiResponse(
-    ServerApiResponse::InvalidRequestKey,
-    new EmptyJson()
-  );
+  return &Storage;
 }

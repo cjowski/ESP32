@@ -8,6 +8,9 @@
   #include "EspServer/Modes/Wifi/EspWifiStation.h"
   #include "EspServer/Api/EspApi.h"
   #include "EspServer/Storage/EspServerStorage.h"
+  #include "ApiRequestProcessor/ServerApiRequestProcessor.h"
+
+  #define ESP_SERVER_PORT 80
 
   class EspServer
   {
@@ -15,23 +18,24 @@
     EspAccessPoint *AccessPoint;
     EspWifiStation *WifiStation;
     EspApi *Api;
+    ServerApiRequestProcessor *MyServerApiRequestProcessor;
     HardwareSerial *PrintSerial;
+    EspServerStorage Storage;
 
     public:
     enum Mode {
       accessPoint,
       wifi
     };
-    EspServerStorage Storage;
     EspServer(
-      int serverPort,
       HardwareSerial *printSerial,
       std::function<ControllerApiResponse*(ControllerApiRequest*)> sendRequestToController
     );
+    void Connect(char *ssid, char *password, EspServer::Mode espMode);
     void SetAccessPoint(char *ssid, char *password);
     void SetupApi();
-    ServerApiResponse *ProcessApiRequest(ServerApiRequest *apiRequest);
     WifiConnectionStatus ConnectToWifi(char *ssid, char *password);
+    EspServerStorage *GetStorage();
   };
 
 #endif

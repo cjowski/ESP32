@@ -48,6 +48,12 @@ void SerialController::ProcessSerialValue(UndefinedSerialValue serialValue)
       new GyroValues(serialValues)
     );
   }
+  else if (Motors().SerialValueValid(readValueKey, serialValues))
+  {
+    Storage->AddMotors(
+      new Motors(serialValues)
+    );
+  }
 }
 
 void SerialController::ProcessSerialValueTask(UndefinedSerialTask serialTask)

@@ -62,6 +62,10 @@ void EspApi::Setup()
     request->send(200, JSON_CONTENT_TYPE, Storage->GyroValuesContainer->GetSerializedJson());
   });
 
+  Server->on("/motor", HTTP_GET, [=](AsyncWebServerRequest *request) {
+    request->send(200, JSON_CONTENT_TYPE, Storage->MotorsContainer->GetSerializedJson());
+  });
+
   Server->on("/sayHiToStm", HTTP_GET, [=](AsyncWebServerRequest *request) {
 
     ControllerApiRequest *apiRequest = new ControllerApiRequest(

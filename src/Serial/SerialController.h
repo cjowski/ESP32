@@ -8,6 +8,7 @@
   #include "EspController/Task/SayHiToStm/SayHiToStmTask.h"
   #include "Json/Serial/FmChannelValues/FmChannelValues.h"
   #include "Json/Serial/GyroValues/GyroValues.h"
+  #include "Json/Serial/Motors/Motors.h"
   #include "Json/TaskStatus/TaskStatus.h"
   #include "Json/SayHiStmResponse/SayHiStmResponse.h"
 

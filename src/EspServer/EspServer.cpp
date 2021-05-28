@@ -59,6 +59,11 @@ void EspServer::SetupApi()
   Api->Setup();
 }
 
+void EspServer::Loop()
+{
+  Api->Loop();
+}
+
 WifiConnectionStatus EspServer::ConnectToWifi(char *ssid, char *password)
 {
   return WifiStation->Connect(ssid, password);

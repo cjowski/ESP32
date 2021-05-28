@@ -34,6 +34,7 @@
     void Connect(char *ssid, char *password, EspServer::Mode espMode);
     void SetAccessPoint(char *ssid, char *password);
     void SetupApi();
+    void Loop();
     WifiConnectionStatus ConnectToWifi(char *ssid, char *password);
     EspServerStorage *GetStorage();
   };

@@ -2,9 +2,9 @@
 
 EspServerStorage::EspServerStorage()
 {
-  FmChannelValuesContainer = new JsonContainer("FmChannelValues", 50, 10000);
-  GyroValuesContainer = new JsonContainer("GyroValues", 50, 10000);
-  MotorsContainer = new JsonContainer("Motors", 50, 10000);
+  FmChannelValuesContainer = new JsonContainer("FmChannelValues", 10, 2000);
+  GyroValuesContainer = new JsonContainer("GyroValues", 10, 2000);
+  MotorsContainer = new JsonContainer("Motors", 10, 2000);
 }
 
 void EspServerStorage::AddFmChannelValues(FmChannelValues *fmChannelValues)

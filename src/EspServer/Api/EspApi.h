@@ -21,13 +21,27 @@
   {
     private:
     const char* JSON_CONTENT_TYPE = "application/json";
-    EspServerStorage *Storage;
     AsyncWebServer *Server;
+    AsyncWebSocket *WebSocket;
+    AsyncWebSocketClient *WebSocketClient = NULL;
+    EspServerStorage *Storage;
     HardwareSerial *PrintSerial;
     std::function<ServerApiResponse*(ServerApiRequest*)> SendRequestToServer;
     std::function<ControllerApiResponse*(ControllerApiRequest*)> SendRequestToController;
 
+    uint32_t WebSocketUpdateDelay = 40;
+    uint32_t PreviousWebSocketUpdate = 0;
+
     void Setup();
+    void OnWebSocketEvent(
+      AsyncWebSocket *server,
+      AsyncWebSocketClient *client,
+      AwsEventType type,
+      void *arg,
+      uint8_t *data,
+      size_t len
+    );
+    void Loop();
 
     public:
     EspApi(

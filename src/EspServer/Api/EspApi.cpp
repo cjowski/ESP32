@@ -9,6 +9,7 @@ EspApi::EspApi(
 )
 {
   Server = new AsyncWebServer(serverPort);
+  WebSocket = new AsyncWebSocket("/esp32ws");
   Storage = storage;
   PrintSerial = printSerial;
   SendRequestToServer = sendRequestToServer;
@@ -107,5 +108,63 @@ void EspApi::Setup()
     request->send(200, JSON_CONTENT_TYPE, controllerApiResponseJson);
   });
 
+  WebSocket->onEvent(
+    [&] (
+      AsyncWebSocket *server,
+      AsyncWebSocketClient *client,
+      AwsEventType type,
+      void *arg,
+      uint8_t *data,
+      size_t len
+    ) {
+      OnWebSocketEvent(
+        server,
+        client,
+        type,
+        arg,
+        data,
+        len
+      );
+    }
+  );
+  Server->addHandler(WebSocket);
   Server->begin();
+}
+
+void EspApi::OnWebSocketEvent(
+  AsyncWebSocket *server,
+  AsyncWebSocketClient *client,
+  AwsEventType type,
+  void *arg,
+  uint8_t *data,
+  size_t len
+)
+{
+  if (type == WS_EVT_CONNECT) {
+    PrintSerial->println("Websocket client connection received");
+    WebSocketClient = client;
+  }
+  else if (type == WS_EVT_DISCONNECT) {
+    PrintSerial->println("Websocket client connection finished");
+    WebSocketClient = NULL;
+  }
+}
+
+void EspApi::Loop()
+{
+  uint32_t currentTime = millis();
+  if (currentTime - PreviousWebSocketUpdate > WebSocketUpdateDelay) {
+    if (WebSocketClient != NULL && WebSocketClient->status() == WS_CONNECTED) {
+      DynamicJsonDocument outputJson(10000);
+      outputJson["Fm"] = Storage->FmChannelValuesContainer->GetJson();
+      outputJson["Gyro"] = Storage->GyroValuesContainer->GetJson();
+      outputJson["Motor"] = Storage->MotorsContainer->GetJson();
+      String serializedJson;
+      serializeJson(outputJson, serializedJson);
+      WebSocketClient->text(
+        serializedJson
+      );
+    }
+    PreviousWebSocketUpdate = currentTime;
+  }
 }

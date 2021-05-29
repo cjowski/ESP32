@@ -7,6 +7,7 @@ EspServer::EspServer(
 {
   AccessPoint = new EspAccessPoint(printSerial);
   WifiStation = new EspWifiStation(printSerial);
+  Server = new AsyncWebServer(ESP_SERVER_PORT);
   MyServerApiRequestProcessor = new ServerApiRequestProcessor(
     [&] (char *ssid, char *password) -> WifiConnectionStatus {
       return ConnectToWifi(ssid, password);
@@ -14,7 +15,7 @@ EspServer::EspServer(
   );
 
   Api = new EspApi(
-    ESP_SERVER_PORT,
+    Server,
     &Storage,
     printSerial,
     [&] (ServerApiRequest *apiRequest) -> ServerApiResponse* {
@@ -34,13 +35,13 @@ void EspServer::Connect(char *ssid, char *password, EspServer::Mode espMode)
     case EspServer::Mode::accessPoint:
     {
       SetAccessPoint(ssid, password);
-      SetupApi();
+      Setup();
       break;
     }
     case EspServer::Mode::wifi:
     {
       ConnectToWifi(ssid, password);
-      SetupApi();
+      Setup();
       break;
     }
     default: {
@@ -54,9 +55,10 @@ void EspServer::SetAccessPoint(char *ssid, char *password)
   AccessPoint->Connect(ssid, password);
 }
 
-void EspServer::SetupApi()
+void EspServer::Setup()
 {
   Api->Setup();
+  Server->begin();
 }
 
 void EspServer::Loop()

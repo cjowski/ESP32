@@ -1,15 +1,15 @@
 #include "EspApi.h"
 
 EspApi::EspApi(
-  int serverPort,
+  AsyncWebServer *server,
   EspServerStorage *storage,
   HardwareSerial *printSerial,
   std::function<ServerApiResponse*(ServerApiRequest*)> sendRequestToServer,
   std::function<ControllerApiResponse*(ControllerApiRequest*)> sendRequestToController
 )
 {
-  Server = new AsyncWebServer(serverPort);
-  WebSocket = new AsyncWebSocket("/esp32ws");
+  Server = server;
+  WebSocket = new EspWebSocket(server, storage, printSerial);
   Storage = storage;
   PrintSerial = printSerial;
   SendRequestToServer = sendRequestToServer;
@@ -18,10 +18,20 @@ EspApi::EspApi(
 
 void EspApi::Setup()
 {
+  SetupHeaders();
+  SetupWebHandlers();
+  WebSocket->Setup();
+}
+
+void EspApi::SetupHeaders()
+{
   DefaultHeaders::Instance().addHeader("Access-Control-Allow-Origin", "*");
   DefaultHeaders::Instance().addHeader("Access-Control-Allow-Methods", "GET, POST, PATCH, PUT, DELETE, OPTIONS");
   DefaultHeaders::Instance().addHeader("Access-Control-Allow-Headers", "Accept, Origin, Content-Type, Access-Control-Allow-Headers, X-Auth-Token, Authorization, X-Requested-With");
+}
 
+void EspApi::SetupWebHandlers()
+{
   Server->on(
     "/wifiConnect",
     HTTP_POST,
@@ -107,64 +117,9 @@ void EspApi::Setup()
 
     request->send(200, JSON_CONTENT_TYPE, controllerApiResponseJson);
   });
-
-  WebSocket->onEvent(
-    [&] (
-      AsyncWebSocket *server,
-      AsyncWebSocketClient *client,
-      AwsEventType type,
-      void *arg,
-      uint8_t *data,
-      size_t len
-    ) {
-      OnWebSocketEvent(
-        server,
-        client,
-        type,
-        arg,
-        data,
-        len
-      );
-    }
-  );
-  Server->addHandler(WebSocket);
-  Server->begin();
-}
-
-void EspApi::OnWebSocketEvent(
-  AsyncWebSocket *server,
-  AsyncWebSocketClient *client,
-  AwsEventType type,
-  void *arg,
-  uint8_t *data,
-  size_t len
-)
-{
-  if (type == WS_EVT_CONNECT) {
-    PrintSerial->println("Websocket client connection received");
-    WebSocketClient = client;
-  }
-  else if (type == WS_EVT_DISCONNECT) {
-    PrintSerial->println("Websocket client connection finished");
-    WebSocketClient = NULL;
-  }
 }
 
 void EspApi::Loop()
 {
-  uint32_t currentTime = millis();
-  if (currentTime - PreviousWebSocketUpdate > WebSocketUpdateDelay) {
-    if (WebSocketClient != NULL && WebSocketClient->status() == WS_CONNECTED) {
-      DynamicJsonDocument outputJson(10000);
-      outputJson["Fm"] = Storage->FmChannelValuesContainer->GetJson();
-      outputJson["Gyro"] = Storage->GyroValuesContainer->GetJson();
-      outputJson["Motor"] = Storage->MotorsContainer->GetJson();
-      String serializedJson;
-      serializeJson(outputJson, serializedJson);
-      WebSocketClient->text(
-        serializedJson
-      );
-    }
-    PreviousWebSocketUpdate = currentTime;
-  }
+  WebSocket->Loop();
 }

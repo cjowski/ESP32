@@ -2,7 +2,6 @@
 #define ESP_SERVER_H
 
   #include <WiFi.h>
-  #include <HardwareSerial.h>
   #include <WString.h>
   #include "EspServer/Modes/AccessPoint/EspAccessPoint.h"
   #include "EspServer/Modes/Wifi/EspWifiStation.h"
@@ -20,8 +19,8 @@
     AsyncWebServer *Server;
     EspApi *Api;
     ServerApiRequestProcessor *MyServerApiRequestProcessor;
-    HardwareSerial *PrintSerial;
     EspServerStorage Storage;
+    bool DebugMode = false;
     
     void Setup();
 
@@ -31,8 +30,8 @@
       wifi
     };
     EspServer(
-      HardwareSerial *printSerial,
-      std::function<ControllerApiResponse*(ControllerApiRequest*)> sendRequestToController
+      std::function<ControllerApiResponse*(ControllerApiRequest*)> sendRequestToController,
+      bool debugMode
     );
     void Connect(char *ssid, char *password, EspServer::Mode espMode);
     void SetAccessPoint(char *ssid, char *password);

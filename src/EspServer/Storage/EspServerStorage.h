@@ -2,9 +2,9 @@
 #define ESP_SERVER_STORAGE_H
 
   #include "Json/JsonContainer.h"
-  #include "Json/Serial/FmChannelValues/FmChannelValues.h"
-  #include "Json/Serial/GyroValues/GyroValues.h"
-  #include "Json/Serial/Motors/Motors.h"
+  #include "Json/FmChannelValues/FmChannelValues.h"
+  #include "Json/GyroValues/GyroValues.h"
+  #include "Json/Motors/Motors.h"
   #include "Json/SayHiStmResponse/SayHiStmResponse.h"
   
   class EspServerStorage

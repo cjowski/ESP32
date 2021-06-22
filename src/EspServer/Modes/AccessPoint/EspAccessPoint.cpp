@@ -1,8 +1,8 @@
 #include "EspAccessPoint.h"
 
-EspAccessPoint::EspAccessPoint(HardwareSerial *printSerial)
+EspAccessPoint::EspAccessPoint(bool debugMode)
 {
-  PrintSerial = printSerial;
+  DebugMode = debugMode;
 }
 
 void EspAccessPoint::Connect(char* ssid, char* password)
@@ -10,7 +10,11 @@ void EspAccessPoint::Connect(char* ssid, char* password)
   WiFi.mode(WIFI_AP);
   WiFi.softAP(ssid, password);
   IPAddress myIP = WiFi.softAPIP();
-  PrintSerial->println("");
-  PrintSerial->print("AP IP address: ");
-  PrintSerial->println(myIP);
+
+  if (DebugMode)
+  {
+    Serial.println("");
+    Serial.print("AP IP address: ");
+    Serial.println(myIP);
+  }
 }

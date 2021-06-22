@@ -2,13 +2,13 @@
 #define ESP_ACCESS_POINT_H
 
   #include <WiFi.h>
-  #include <HardwareSerial.h>
 
   class EspAccessPoint
   {
     private:
-    HardwareSerial *PrintSerial;
-    EspAccessPoint(HardwareSerial *printSerial);
+    bool DebugMode = false;
+
+    EspAccessPoint(bool debugMode);
     void Connect(char* ssid, char* password);
 
     friend class EspServer;

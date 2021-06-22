@@ -1,16 +1,13 @@
 #ifndef SERIAL_CONTROLLER_H
 #define SERIAL_CONTROLLER_H
   
-  #include "Serial/Reader/SerialReader.h"
+  #include <Serial/Read/SerialReader.h>
+  #include <Serial/Type/StringList/Decoder/StringListDecoder.h>
   #include "EspServer/Storage/EspServerStorage.h"
   #include "Task/TaskController/TaskController.h"
-  #include "Task/UndefinedSerialTask.h"
-  #include "EspController/Task/SayHiToStm/SayHiToStmTask.h"
-  #include "Json/Serial/FmChannelValues/FmChannelValues.h"
-  #include "Json/Serial/GyroValues/GyroValues.h"
-  #include "Json/Serial/Motors/Motors.h"
-  #include "Json/TaskStatus/TaskStatus.h"
-  #include "Json/SayHiStmResponse/SayHiStmResponse.h"
+  #include "Json/FmChannelValues/FmChannelValues.h"
+  #include "Json/GyroValues/GyroValues.h"
+  #include "Json/Motors/Motors.h"
 
   #define SERIAL2_RX_PIN 16
   #define SERIAL2_TX_PIN 17
@@ -20,15 +17,19 @@
   class SerialController
   {
     private:
-    SerialReader *MySerialReader;
+    SerialReader *Reader;
     TaskController *MyTaskController;
     EspServerStorage *Storage;
 
+    void ProcessDecoderOutput(SerialDecoderOutput *decoderOutput);
+
     public:
-    SerialController(TaskController *taskController, EspServerStorage *storage);
+    SerialController(
+      SerialReader *reader,
+      TaskController *taskController,
+      EspServerStorage *storage
+    );
     void Loop();
-    void ProcessSerialValue(UndefinedSerialValue serialValue);
-    void ProcessSerialValueTask(UndefinedSerialTask serialTask);
   };
 
 #endif

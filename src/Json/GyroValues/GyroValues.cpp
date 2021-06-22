@@ -1,8 +1,9 @@
 #include "GyroValues.h"
 
-GyroValues::GyroValues(std::list<String> serialValues)
+GyroValues::GyroValues(StringListDecoderOutput *decoderOutput)
 {
-  auto it = serialValues.begin();
+  std::list<String> texts = decoderOutput->GetTexts();
+  auto it = texts.begin();
   Time = (*it).toInt();
   it++;
   CalibrationDone = (*it).toInt() == 1;
@@ -52,14 +53,19 @@ bool GyroValues::Equals(Json *otherJson)
   return IsInteger(otherTimeString) && Time == otherTimeString.toInt();
 }
 
-bool GyroValues::SerialValuesMatched(std::list<String> serialValues)
+bool GyroValues::SerialDecoderOutputMatched(SerialDecoderOutput *decoderOutput)
 {
-  if (serialValues.size() != SERIAL_VALUES_COUNT())
+  StringListDecoderOutput *stringListDecoderOutput = (StringListDecoderOutput*)decoderOutput;
+
+  if (stringListDecoderOutput->GetKey() != SERIAL_KEY
+    || stringListDecoderOutput->GetTexts().size() != SERIAL_VALUES_COUNT
+  )
   {
     return false;
   }
 
-  for (auto it = serialValues.begin(); it != serialValues.end(); it++)
+  std::list<String> texts = stringListDecoderOutput->GetTexts();
+  for (auto it = texts.begin(); it != texts.end(); it++)
   {
     if (!IsNumber(*it))
     {
@@ -68,10 +74,4 @@ bool GyroValues::SerialValuesMatched(std::list<String> serialValues)
   }
 
   return true;
-}
-
-std::list<String> GyroValues::GetPrintStrings()
-{
-  std::list<String> printStrings;
-  return printStrings;
 }

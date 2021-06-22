@@ -1,8 +1,9 @@
 #include "FmChannelValues.h"
 
-FmChannelValues::FmChannelValues(std::list<String> serialValues)
+FmChannelValues::FmChannelValues(StringListDecoderOutput *decoderOutput)
 {
-  auto it = serialValues.begin();
+  std::list<String> texts = decoderOutput->GetTexts();
+  auto it = texts.begin();
   Time = (*it).toInt();
   it++;
   FmSignalState = (*it).toInt();
@@ -43,14 +44,19 @@ bool FmChannelValues::Equals(Json *otherJson)
   return IsInteger(otherTimeString) && Time == otherTimeString.toInt();
 }
 
-bool FmChannelValues::SerialValuesMatched(std::list<String> serialValues)
+bool FmChannelValues::SerialDecoderOutputMatched(SerialDecoderOutput *decoderOutput)
 {
-  if (serialValues.size() != SERIAL_VALUES_COUNT())
+  StringListDecoderOutput *stringListDecoderOutput = (StringListDecoderOutput*)decoderOutput;
+
+  if (stringListDecoderOutput->GetKey() != SERIAL_KEY
+    || stringListDecoderOutput->GetTexts().size() != SERIAL_VALUES_COUNT
+  )
   {
     return false;
   }
 
-  for (auto it = serialValues.begin(); it != serialValues.end(); it++)
+  std::list<String> texts = stringListDecoderOutput->GetTexts();
+  for (auto it = texts.begin(); it != texts.end(); it++)
   {
     if (!IsInteger(*it))
     {
@@ -59,10 +65,4 @@ bool FmChannelValues::SerialValuesMatched(std::list<String> serialValues)
   }
 
   return true;
-}
-
-std::list<String> FmChannelValues::GetPrintStrings()
-{
-  std::list<String> printStrings;
-  return printStrings;
 }

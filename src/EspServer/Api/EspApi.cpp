@@ -3,17 +3,17 @@
 EspApi::EspApi(
   AsyncWebServer *server,
   EspServerStorage *storage,
-  HardwareSerial *printSerial,
   std::function<ServerApiResponse*(ServerApiRequest*)> sendRequestToServer,
-  std::function<ControllerApiResponse*(ControllerApiRequest*)> sendRequestToController
+  std::function<ControllerApiResponse*(ControllerApiRequest*)> sendRequestToController,
+  bool debugMode
 )
 {
   Server = server;
-  WebSocket = new EspWebSocket(server, storage, printSerial);
+  WebSocket = new EspWebSocket(server, storage, debugMode);
   Storage = storage;
-  PrintSerial = printSerial;
   SendRequestToServer = sendRequestToServer;
   SendRequestToController = sendRequestToController;
+  DebugMode = debugMode;
 }
 
 void EspApi::Setup()

@@ -1,11 +1,17 @@
 #include "SayHiToStmTask.h"
 
-SayHiToStmTask::SayHiToStmTask(int id, int startTime, SerialPrinter *serialPrinter)
+SayHiToStmTask::SayHiToStmTask(
+  int id,
+  int startTime,
+  SerialPrinter *printer,
+  bool debugMode
+)
 {
   ID = id;
   StartTime = startTime;
   PreviousStepTime = startTime;
-  Printer = serialPrinter;
+  Printer = printer;
+  DebugMode = debugMode;
 }
 
 String SayHiToStmTask::GetStmGreeting()
@@ -27,6 +33,14 @@ void SayHiToStmTask::SetStmGreeting(String stmGreeting)
 void SayHiToStmTask::Loop()
 {
   SayHiToStmMessage *message = new SayHiToStmMessage(ID);
-  Printer->Println(message);
+
+  if (DebugMode)
+  {
+    Serial.println(
+      "ESP taskID: " + String(ID) + ", ESP taskType: " + String(EspTask::SayHiToStm)
+    );
+  }
+
+  Printer->Println(message->GetSerialEncoderInput());
   delete message;
 }

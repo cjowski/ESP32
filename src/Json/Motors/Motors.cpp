@@ -1,8 +1,9 @@
 #include "Motors.h"
 
-Motors::Motors(std::list<String> serialValues)
+Motors::Motors(StringListDecoderOutput *decoderOutput)
 {
-  auto it = serialValues.begin();
+  std::list<String> texts = decoderOutput->GetTexts();
+  auto it = texts.begin();
   Time = (*it).toInt();
   it++;
   for (int i = 0; i < MOTORS_COUNT; i++, it++)
@@ -40,14 +41,19 @@ bool Motors::Equals(Json *otherJson)
   return IsInteger(otherTimeString) && Time == otherTimeString.toInt();
 }
 
-bool Motors::SerialValuesMatched(std::list<String> serialValues)
+bool Motors::SerialDecoderOutputMatched(SerialDecoderOutput *decoderOutput)
 {
-  if (serialValues.size() != SERIAL_VALUES_COUNT())
+  StringListDecoderOutput *stringListDecoderOutput = (StringListDecoderOutput*)decoderOutput;
+
+  if (stringListDecoderOutput->GetKey() != SERIAL_KEY
+    || stringListDecoderOutput->GetTexts().size() != SERIAL_VALUES_COUNT
+  )
   {
     return false;
   }
 
-  for (auto it = serialValues.begin(); it != serialValues.end(); it++)
+  std::list<String> texts = stringListDecoderOutput->GetTexts();
+  for (auto it = texts.begin(); it != texts.end(); it++)
   {
     if (!IsInteger(*it))
     {
@@ -56,10 +62,4 @@ bool Motors::SerialValuesMatched(std::list<String> serialValues)
   }
 
   return true;
-}
-
-std::list<String> Motors::GetPrintStrings()
-{
-  std::list<String> printStrings;
-  return printStrings;
 }

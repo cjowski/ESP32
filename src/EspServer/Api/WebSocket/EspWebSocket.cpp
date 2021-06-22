@@ -3,13 +3,13 @@
 EspWebSocket::EspWebSocket(
   AsyncWebServer *server,
   EspServerStorage *storage,
-  HardwareSerial *printSerial
+  bool debugMode
 )
 {
   Server = server;
   WebSocket = new AsyncWebSocket(WEB_SOCKET_URL);
   Storage = storage;
-  PrintSerial = printSerial;
+  DebugMode = debugMode;
 }
 
 void EspWebSocket::Setup()
@@ -46,11 +46,11 @@ void EspWebSocket::OnWebSocketEvent(
 )
 {
   if (type == WS_EVT_CONNECT) {
-    PrintSerial->println("Websocket client connection received");
+    if (DebugMode) Serial.println("Websocket client connection received");
     WebSocketClient = client;
   }
   else if (type == WS_EVT_DISCONNECT) {
-    PrintSerial->println("Websocket client connection finished");
+    if (DebugMode) Serial.println("Websocket client connection finished");
     WebSocketClient = NULL;
   }
 }

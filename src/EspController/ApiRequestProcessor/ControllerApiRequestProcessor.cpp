@@ -14,7 +14,8 @@ ControllerApiResponse *ControllerApiRequestProcessor::ProcessApiRequest(Controll
     SayHiToStmTask *sayHiToStmTask = new SayHiToStmTask(
       MyTaskController->GetNewTaskID(),
       millis(),
-      new SerialPrinter(&Serial2)
+      MyTaskController->GetPrinter(),
+      true
     );
 
     MyTaskController->AddTask(sayHiToStmTask);

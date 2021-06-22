@@ -1,82 +1,52 @@
 #include "SerialController.h"
 
 SerialController::SerialController(
+  SerialReader *reader,
   TaskController *taskController,
   EspServerStorage *storage
 )
 {
+  Reader = reader;
   MyTaskController = taskController;
   Storage = storage;
-  Serial.begin(SERIAL_BAUD_RATE);
-  Serial2.begin(SERIAL_BAUD_RATE, SERIAL_8N1, SERIAL2_RX_PIN, SERIAL2_TX_PIN);
-  Serial2.setRxBufferSize(SERIAL_SIZE_RX);
-  MySerialReader = new SerialReader(&Serial2);
 }
 
 void SerialController::Loop()
 {
-  ProcessSerialValue(
-    MySerialReader->Read()
-  );
+  SerialDecoderOutput *decoderOutput = Reader->Read();
+  ProcessDecoderOutput(decoderOutput);
+  delete decoderOutput;
 }
 
-void SerialController::ProcessSerialValue(UndefinedSerialValue serialValue)
+void SerialController::ProcessDecoderOutput(SerialDecoderOutput *decoderOutput)
 {
-  if (!serialValue.Exists())
+  if (!decoderOutput->Exists)
   {
     return;
   }
 
-  char readValueKey = serialValue.GetReadValueKey();
-  std::list<String> serialValues = serialValue.GetPrintStrings();
-  if (UndefinedSerialTask().SerialValueValid(readValueKey, serialValues))
-  {
-    ProcessSerialValueTask(
-      UndefinedSerialTask(serialValue)
-    );
-    return;
-  }
-  else if (FmChannelValues().SerialValueValid(readValueKey, serialValues))
+  if (FmChannelValues::SerialDecoderOutputMatched(decoderOutput))
   {
     Storage->AddFmChannelValues(
-      new FmChannelValues(serialValues)
+      new FmChannelValues(decoderOutput)
     );
   }
-  else if (GyroValues().SerialValueValid(readValueKey, serialValues))
+  else if (GyroValues::SerialDecoderOutputMatched(decoderOutput))
   {
     Storage->AddGyroValues(
-      new GyroValues(serialValues)
+      new GyroValues(decoderOutput)
     );
   }
-  else if (Motors().SerialValueValid(readValueKey, serialValues))
+  else if (Motors::SerialDecoderOutputMatched(decoderOutput))
   {
     Storage->AddMotors(
-      new Motors(serialValues)
+      new Motors(decoderOutput)
     );
   }
-}
-
-void SerialController::ProcessSerialValueTask(UndefinedSerialTask serialTask)
-{
-  if (!MyTaskController->StmTaskProcessed(serialTask.GetTaskID()))
+  else if (UndefinedSerialTask::SerialDecoderOutputMatched(decoderOutput))
   {
-    UndefinedSerialValue serialValue = serialTask.GetSerialValue();
-    char readValueKey = serialValue.GetReadValueKey();
-    std::list<String> serialValues = serialValue.GetPrintStrings();
-    if (SayHiToEspMessage().SerialValueValid(readValueKey, serialValues))
-    {
-      SayHiToEspMessage sayHiToEspMessage = SayHiToEspMessage(serialValues);
-      SayHiToStmTask *sayHiToStmTask = (SayHiToStmTask*)MyTaskController->GetTaskWithID(
-        sayHiToEspMessage.GetEspTaskID()
-      );
-      if (sayHiToStmTask != nullptr)
-      {
-        sayHiToStmTask->SetStmGreeting(
-          sayHiToEspMessage.GetGreeting()
-        );
-        Serial.println(sayHiToEspMessage.GetGreeting());
-        MyTaskController->AddProcessedStmTaskID(serialTask.GetTaskID());
-      }
-    }
+    MyTaskController->ProcessUndefinedSerialTask(
+      UndefinedSerialTask(decoderOutput)
+    );
   }
 }

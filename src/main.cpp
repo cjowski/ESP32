@@ -13,6 +13,7 @@ const char* PASSWORD = "tkr8QejnrMtr";
 EspController *espController = new EspController();
 
 void setup() {
+  Serial.begin(SERIAL_BAUD_RATE);
   espController->ConnectServer(
     (char*)SSID,
     (char*)PASSWORD,

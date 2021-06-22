@@ -17,13 +17,13 @@
     AsyncWebSocket *WebSocket;
     AsyncWebSocketClient *WebSocketClient = NULL;
     EspServerStorage *Storage;
-    HardwareSerial *PrintSerial;
+    bool DebugMode = false;
 
     public:
     EspWebSocket(
       AsyncWebServer *server,
       EspServerStorage *storage,
-      HardwareSerial *printSerial
+      bool debugMode
     );
     void Setup();
     void OnWebSocketEvent(

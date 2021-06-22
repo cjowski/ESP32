@@ -26,9 +26,9 @@
     AsyncWebServer *Server;
     EspWebSocket *WebSocket;
     EspServerStorage *Storage;
-    HardwareSerial *PrintSerial;
     std::function<ServerApiResponse*(ServerApiRequest*)> SendRequestToServer;
     std::function<ControllerApiResponse*(ControllerApiRequest*)> SendRequestToController;
+    bool DebugMode = false;
 
     void SetupHeaders();
     void SetupWebHandlers();
@@ -37,9 +37,9 @@
     EspApi(
       AsyncWebServer *server,
       EspServerStorage *storage,
-      HardwareSerial *printSerial,
       std::function<ServerApiResponse*(ServerApiRequest*)> sendRequestToServer,
-      std::function<ControllerApiResponse*(ControllerApiRequest*)> sendRequestToController
+      std::function<ControllerApiResponse*(ControllerApiRequest*)> sendRequestToController,
+      bool debugMode
     );
     void Setup();
     void Loop();

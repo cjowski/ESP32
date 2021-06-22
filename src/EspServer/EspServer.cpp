@@ -1,12 +1,12 @@
 #include "EspServer.h"
 
 EspServer::EspServer(
-  HardwareSerial *printSerial,
-  std::function<ControllerApiResponse*(ControllerApiRequest*)> sendRequestToController
+  std::function<ControllerApiResponse*(ControllerApiRequest*)> sendRequestToController,
+  bool debugMode
 )
 {
-  AccessPoint = new EspAccessPoint(printSerial);
-  WifiStation = new EspWifiStation(printSerial);
+  AccessPoint = new EspAccessPoint(true);
+  WifiStation = new EspWifiStation(true);
   Server = new AsyncWebServer(ESP_SERVER_PORT);
   MyServerApiRequestProcessor = new ServerApiRequestProcessor(
     [&] (char *ssid, char *password) -> WifiConnectionStatus {
@@ -17,15 +17,15 @@ EspServer::EspServer(
   Api = new EspApi(
     Server,
     &Storage,
-    printSerial,
     [&] (ServerApiRequest *apiRequest) -> ServerApiResponse* {
       return MyServerApiRequestProcessor->ProcessApiRequest(apiRequest);
     },
-    sendRequestToController
+    sendRequestToController,
+    true
   );
 
-  PrintSerial = printSerial;
   Storage = EspServerStorage();
+  DebugMode = debugMode;
 }
 
 void EspServer::Connect(char *ssid, char *password, EspServer::Mode espMode)

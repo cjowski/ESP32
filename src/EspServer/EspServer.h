@@ -38,6 +38,8 @@
     void Loop();
     WifiConnectionStatus ConnectToWifi(char *ssid, char *password);
     EspServerStorage *GetStorage();
+    String GetAccessPointIp();
+    String GetWifiIp();
   };
 
 #endif

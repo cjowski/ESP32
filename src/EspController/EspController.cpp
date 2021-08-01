@@ -30,6 +30,17 @@ EspController::EspController()
     MyTaskController,
     MyEspServer->GetStorage()
   );
+  MyIpDisplayer = new IpDisplayer(
+    OLED_SCREEN_WIDTH,
+    OLED_SCREEN_HEIGHT,
+    500,
+    [&] () -> String {
+      return MyEspServer->GetAccessPointIp();
+    },
+    [&] () -> String {
+      return MyEspServer->GetWifiIp();
+    }
+  );
 }
 
 void EspController::ConnectServer(char *ssid, char *password, EspServer::Mode espMode)
@@ -42,4 +53,5 @@ void EspController::Loop()
   MySerialController->Loop();
   MyTaskController->Loop();
   MyEspServer->Loop();
+  MyIpDisplayer->Loop();
 }

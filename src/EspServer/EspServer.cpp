@@ -75,3 +75,13 @@ EspServerStorage *EspServer::GetStorage()
 {
   return &Storage;
 }
+
+String EspServer::GetAccessPointIp()
+{
+  return WiFi.softAPIP().toString();
+}
+
+String EspServer::GetWifiIp()
+{
+  return WiFi.localIP().toString();
+}

@@ -4,6 +4,10 @@
   #include "EspServer/EspServer.h"
   #include "Serial/SerialController.h"
   #include "ApiRequestProcessor/ControllerApiRequestProcessor.h"
+  #include "Oled/IpDisplayer/IpDisplayer.h"
+
+  #define OLED_SCREEN_WIDTH 128
+  #define OLED_SCREEN_HEIGHT 32
 
   class EspController
   {
@@ -12,6 +16,7 @@
     TaskController *MyTaskController;
     SerialController *MySerialController;
     ControllerApiRequestProcessor *MyControllerApiRequestProcessor;
+    IpDisplayer *MyIpDisplayer;
 
     public:
     EspController();

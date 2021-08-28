@@ -42,6 +42,7 @@
       bool debugMode
     );
     void Setup();
+    String GetWebSocketClientIp();
     void Loop();
   };
 

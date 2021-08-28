@@ -46,13 +46,26 @@ void EspWebSocket::OnWebSocketEvent(
 )
 {
   if (type == WS_EVT_CONNECT) {
-    if (DebugMode) Serial.println("Websocket client connection received");
     WebSocketClient = client;
+    if (DebugMode) {
+      Serial.print("Websocket client connection received: ");
+      Serial.println(GetClientIp());
+    }
   }
   else if (type == WS_EVT_DISCONNECT) {
-    if (DebugMode) Serial.println("Websocket client connection finished");
     WebSocketClient = NULL;
+    if (DebugMode) {
+      Serial.println("Websocket client connection finished");
+    }
   }
+}
+
+String EspWebSocket::GetClientIp()
+{
+  if (WebSocketClient == NULL) {
+    return "";
+  }
+  return WebSocketClient->remoteIP().toString();
 }
 
 void EspWebSocket::Loop()

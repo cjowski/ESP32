@@ -31,14 +31,19 @@ EspController::EspController()
     MyEspServer->GetStorage()
   );
   MyIpDisplayer = new IpDisplayer(
-    OLED_SCREEN_WIDTH,
-    OLED_SCREEN_HEIGHT,
+    new Sh1106Driver(
+      OLED_SCREEN_WIDTH,
+      OLED_SCREEN_HEIGHT
+    ),
     500,
     [&] () -> String {
       return MyEspServer->GetAccessPointIp();
     },
     [&] () -> String {
       return MyEspServer->GetWifiIp();
+    },
+    [&] () -> String {
+      return MyEspServer->GetWebSocketClientIp();
     }
   );
 }

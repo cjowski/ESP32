@@ -85,3 +85,8 @@ String EspServer::GetWifiIp()
 {
   return WiFi.localIP().toString();
 }
+
+String EspServer::GetWebSocketClientIp()
+{
+  return Api->GetWebSocketClientIp();
+}

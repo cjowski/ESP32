@@ -40,6 +40,7 @@
     EspServerStorage *GetStorage();
     String GetAccessPointIp();
     String GetWifiIp();
+    String GetWebSocketClientIp();
   };
 
 #endif

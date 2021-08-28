@@ -1,15 +1,12 @@
 #include "OledController.h"
 
 OledController::OledController(
-  int screenWidth,
-  int screenHeight,
+  OledDriver *driver,
   int displayDelay
 )
 {
-  ScreenWidth = screenWidth;
-  ScreenHeight = screenHeight;
+  Driver = driver;
   DisplayDelay = displayDelay;
-  Oled = new Adafruit_SSD1306(screenWidth, screenHeight, &Wire, -1);
 }
 
 bool OledController::IsDeviceConnected()
@@ -28,7 +25,7 @@ bool OledController::IsDeviceConnected()
 
 void OledController::StartDisplaying()
 {
-  Oled->begin(SSD1306_SWITCHCAPVCC, 0x3C);
+  Driver->Begin();
   CanDisplay = true;
 }
 

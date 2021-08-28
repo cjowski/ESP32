@@ -119,6 +119,11 @@ void EspApi::SetupWebHandlers()
   });
 }
 
+String EspApi::GetWebSocketClientIp()
+{
+  return WebSocket->GetClientIp();
+}
+
 void EspApi::Loop()
 {
   WebSocket->Loop();

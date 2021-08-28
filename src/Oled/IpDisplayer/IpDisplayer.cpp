@@ -1,28 +1,42 @@
 #include "IpDisplayer.h"
 
 IpDisplayer::IpDisplayer(
-  int screenWidth,
-  int screenHeight,
+  OledDriver *driver,
   int displayDelay,
   std::function<String(void)> getAccessPointIp,
-  std::function<String(void)> getWifiIp
-) : OledController(screenWidth, screenHeight, displayDelay)
+  std::function<String(void)> getWifiIp,
+  std::function<String(void)> getWebSocketClientIp
+) : OledController(driver, displayDelay)
 {
   GetAccessPointIp = getAccessPointIp;
   GetWifiIp = getWifiIp;
+  GetWebSocketClientIp = getWebSocketClientIp;
 }
 
 void IpDisplayer::Display()
 {
-  Oled->clearDisplay();
+  Driver->ClearDisplay();
 
-  Oled->setTextSize(1);
-  Oled->setTextColor(WHITE);
-  Oled->setCursor(0, 0);
-  Oled->print("AP:   ");
-  Oled->println(GetAccessPointIp());
-  Oled->print("WiFi: ");
-  Oled->print(GetWifiIp());
+  Driver->SetFontSize(FontSize::Small);
+  Driver->SetFontColor(OledColor::White);
+  Driver->SetCursorAtBeginning();
+  Driver->Print("AP:   ");
+  Driver->Println(GetAccessPointIp());
+  Driver->Print("WiFi: ");
+  Driver->Print(GetWifiIp());
+  Driver->Println();
+  Driver->Println();
+  Driver->Println("WebSocket client: ");
 
-  Oled->display();
+  String webSocketClientIp = GetWebSocketClientIp();
+  if (!webSocketClientIp.isEmpty())
+  {
+    Driver->Print(webSocketClientIp);
+  }
+  else
+  {
+    Driver->Print("none");
+  }
+
+  Driver->Display();
 }
